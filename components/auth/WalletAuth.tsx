@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
+import { useConnection, useConnect, useConnectors, useDisconnect, useSignMessage } from 'wagmi';
 import { Button } from '@/components/ui/Button';
 import { requestSiweNonce, verifySiwe } from '@/lib/api/auth';
 import { buildSiweMessage } from '@/lib/auth/siwe';
@@ -12,8 +12,9 @@ interface WalletAuthProps {
 }
 
 export function WalletAuth({ onSuccess }: WalletAuthProps) {
-  const { address, isConnected, chainId } = useAccount();
-  const { connectAsync, connectors, isPending: isConnecting } = useConnect();
+  const { address, isConnected, chainId, isConnecting: isConnectionConnecting } = useConnection();
+  const { mutateAsync: connectAsync, isPending: isConnecting } = useConnect();
+  const connectors = useConnectors();
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
@@ -25,6 +26,9 @@ export function WalletAuth({ onSuccess }: WalletAuthProps) {
     setError(null);
     setStatus('loading');
     try {
+      if (!connector) {
+        throw new Error('No wallet connector available.');
+      }
       await connectAsync({ connector });
       setStatus('idle');
     } catch (connectError) {
@@ -62,16 +66,18 @@ export function WalletAuth({ onSuccess }: WalletAuthProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="rounded-md border border-border bg-[#ff6b35]/5 px-4 py-3 text-sm text-secondary">
-        Connect your wallet to authenticate using Sign-In with Ethereum.
-      </div>
+      <p className="text-sm text-secondary">
+        Connect a wallet, then sign the message to confirm ownership.
+      </p>
       {error && <p className="text-sm text-red-500">{error}</p>}
       <div className="flex flex-col sm:flex-row gap-3">
-        <Button onClick={handleConnect} disabled={isConnecting || status === 'loading'}>
-          {isConnecting || status === 'loading' ? 'Connecting...' : isConnected ? 'Wallet connected' : 'Connect wallet'}
-        </Button>
+        {!isConnected && (
+          <Button onClick={handleConnect} disabled={isConnecting || isConnectionConnecting || status === 'loading'}>
+            {isConnecting || isConnectionConnecting || status === 'loading' ? 'Connecting...' : 'Connect wallet'}
+          </Button>
+        )}
         <Button
-          variant="secondary"
+          variant={isConnected ? 'primary' : 'secondary'}
           onClick={handleSignIn}
           disabled={!isConnected || status === 'loading'}
         >
@@ -84,7 +90,12 @@ export function WalletAuth({ onSuccess }: WalletAuthProps) {
         )}
       </div>
       {address && (
-        <p className="text-xs text-secondary">Connected as {address}</p>
+        <div className="text-xs text-secondary flex flex-wrap items-center gap-2">
+          <span>Connected as</span>
+          <span className="px-2 py-1 rounded-sm bg-[#ff6b35]/10 text-[#ff6b35] font-mono">
+            {address}
+          </span>
+        </div>
       )}
     </div>
   );

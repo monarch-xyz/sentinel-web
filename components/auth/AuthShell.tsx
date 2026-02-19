@@ -30,15 +30,13 @@ export function AuthShell({ title, description, children }: AuthShellProps) {
           </Link>
         </div>
 
-        <div className="max-w-xl mx-auto">
-          <div className="bg-surface border border-border rounded-lg p-6 sm:p-8 shadow-lg shadow-black/5">
-            <div className="mb-6">
-              <p className="text-xs uppercase tracking-[0.3em] text-secondary mb-3">Access</p>
-              <h1 className="font-zen text-3xl sm:text-4xl font-semibold mb-3">{title}</h1>
-              <p className="text-secondary leading-relaxed">{description}</p>
-            </div>
-            {children}
+        <div className="max-w-5xl mx-auto pb-16">
+          <div className="mb-10">
+            <p className="text-xs uppercase tracking-[0.3em] text-secondary mb-3">Access</p>
+            <h1 className="font-zen text-3xl sm:text-4xl font-semibold mb-3">{title}</h1>
+            <p className="text-secondary leading-relaxed max-w-2xl">{description}</p>
           </div>
+          {children}
         </div>
       </div>
     </div>
