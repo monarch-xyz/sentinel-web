@@ -136,15 +136,15 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio' }: SignalB
 
   return (
     <div className="space-y-6">
-      <div className="bg-surface border border-border rounded-lg p-4">
+      <div className="rounded-md border border-border bg-surface p-4">
         <p className="text-xs uppercase tracking-[0.3em] text-secondary mb-2">Template</p>
         <div className="flex flex-wrap gap-2">
           {SIGNAL_TEMPLATE_PRESETS.map((option) => (
             <button
               key={option.id}
-              className={`px-3 py-2 rounded-md text-sm border transition-colors ${
+              className={`rounded-sm border px-3 py-2 text-sm transition-colors ${
                 selectedPreset === option.id
-                  ? 'border-[#ff6b35] text-[#ff6b35] bg-[#ff6b35]/10'
+                  ? 'border-[#1f2328] bg-[#1f2328]/4 text-foreground'
                   : 'border-border text-secondary hover:text-foreground hover:bg-hovered'
               }`}
               onClick={() => setSelectedPreset(option.id)}
@@ -170,7 +170,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio' }: SignalB
                 value={formState.name}
                 onChange={(event) => updateField('name', event.target.value)}
                 placeholder="Optional custom name"
-                className="rounded-md border border-border bg-transparent px-3 py-2 text-sm text-foreground"
+                className="rounded-sm border border-border bg-transparent px-3 py-2 text-sm text-foreground"
               />
             </label>
             <label className="flex flex-col gap-2 text-sm text-secondary">
@@ -180,7 +180,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio' }: SignalB
                 value={formState.marketId}
                 onChange={(event) => updateField('marketId', event.target.value)}
                 placeholder="0xb8fc70e82bc5..."
-                className="rounded-md border border-border bg-transparent px-3 py-2 text-sm text-foreground"
+                className="rounded-sm border border-border bg-transparent px-3 py-2 text-sm text-foreground"
               />
             </label>
             <label className="flex flex-col gap-2 text-sm text-secondary">
@@ -190,7 +190,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio' }: SignalB
                 min="1"
                 value={formState.chainId}
                 onChange={(event) => updateField('chainId', event.target.value)}
-                className="rounded-md border border-border bg-transparent px-3 py-2 text-sm text-foreground"
+                className="rounded-sm border border-border bg-transparent px-3 py-2 text-sm text-foreground"
               />
             </label>
             <label className="flex flex-col gap-2 text-sm text-secondary">
@@ -200,7 +200,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio' }: SignalB
                 min="1"
                 value={formState.requiredCount}
                 onChange={(event) => updateField('requiredCount', event.target.value)}
-                className="rounded-md border border-border bg-transparent px-3 py-2 text-sm text-foreground"
+                className="rounded-sm border border-border bg-transparent px-3 py-2 text-sm text-foreground"
               />
             </label>
             <label className="flex flex-col gap-2 text-sm text-secondary">
@@ -210,7 +210,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio' }: SignalB
                 min="1"
                 value={formState.dropPercent}
                 onChange={(event) => updateField('dropPercent', event.target.value)}
-                className="rounded-md border border-border bg-transparent px-3 py-2 text-sm text-foreground"
+                className="rounded-sm border border-border bg-transparent px-3 py-2 text-sm text-foreground"
               />
             </label>
             <label className="flex flex-col gap-2 text-sm text-secondary">
@@ -220,7 +220,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio' }: SignalB
                 value={formState.windowDuration}
                 onChange={(event) => updateField('windowDuration', event.target.value)}
                 placeholder="7d"
-                className="rounded-md border border-border bg-transparent px-3 py-2 text-sm text-foreground"
+                className="rounded-sm border border-border bg-transparent px-3 py-2 text-sm text-foreground"
               />
             </label>
             <label className="flex flex-col gap-2 text-sm text-secondary">
@@ -230,7 +230,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio' }: SignalB
                 min="0"
                 value={formState.cooldownMinutes}
                 onChange={(event) => updateField('cooldownMinutes', event.target.value)}
-                className="rounded-md border border-border bg-transparent px-3 py-2 text-sm text-foreground"
+                className="rounded-sm border border-border bg-transparent px-3 py-2 text-sm text-foreground"
               />
             </label>
             <label className="flex flex-col gap-2 text-sm text-secondary sm:col-span-2">
@@ -240,7 +240,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio' }: SignalB
                 value={formState.description}
                 onChange={(event) => updateField('description', event.target.value)}
                 placeholder="Optional description shown in Sentinel"
-                className="rounded-md border border-border bg-transparent px-3 py-2 text-sm text-foreground"
+                className="rounded-sm border border-border bg-transparent px-3 py-2 text-sm text-foreground"
               />
             </label>
           </div>
@@ -252,7 +252,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio' }: SignalB
               onChange={(event) => updateField('whaleAddresses', event.target.value)}
               placeholder={`0x1111111111111111111111111111111111111111\n0x2222222222222222222222222222222222222222\n0x3333333333333333333333333333333333333333`}
               rows={7}
-              className="rounded-md border border-border bg-transparent px-3 py-2 text-sm text-foreground font-mono"
+              className="rounded-sm border border-border bg-transparent px-3 py-2 text-sm text-foreground font-mono"
             />
             <span className="text-xs text-secondary">
               One address per line or comma-separated. For the main preset, use the major suppliers you care about.
@@ -271,25 +271,25 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio' }: SignalB
           </div>
         </SignalPresetCard>
 
-        <div className="bg-surface border border-border rounded-lg p-6 space-y-4">
+        <div className="rounded-md border border-border bg-surface p-6 space-y-4">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-secondary mb-2">Preview</p>
-            <h3 className="font-zen text-xl font-semibold">Morpho whale movement signal</h3>
+            <h3 className="font-zen text-xl">Morpho whale movement signal</h3>
             <p className="text-sm text-secondary mt-2">
               Enter a market plus the supplier wallets you want to watch. This UI creates a Sentinel group-change signal behind the scenes.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="rounded-md border border-border/80 bg-background/50 p-3">
+            <div className="rounded-sm border border-border/80 bg-background/50 p-3">
               <p className="text-xs uppercase tracking-[0.25em] text-secondary">Tracked wallets</p>
               <p className="font-zen text-2xl mt-2">{parsedAddressCount}</p>
             </div>
-            <div className="rounded-md border border-border/80 bg-background/50 p-3">
+            <div className="rounded-sm border border-border/80 bg-background/50 p-3">
               <p className="text-xs uppercase tracking-[0.25em] text-secondary">Required movers</p>
               <p className="font-zen text-2xl mt-2">{formState.requiredCount || '0'}</p>
             </div>
-            <div className="rounded-md border border-border/80 bg-background/50 p-3">
+            <div className="rounded-sm border border-border/80 bg-background/50 p-3">
               <p className="text-xs uppercase tracking-[0.25em] text-secondary">Window</p>
               <p className="font-zen text-2xl mt-2">{formState.windowDuration || '—'}</p>
             </div>
@@ -297,17 +297,17 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio' }: SignalB
 
           {!previewError && previewDefinition ? (
             <>
-              <div className="rounded-md border border-border/80 bg-background/50 p-4">
+              <div className="rounded-sm border border-border/80 bg-background/50 p-4">
                 <p className="text-sm text-secondary">
                   {describeSignalDefinition(buildWhaleMovementTemplate(previewInput).definition)}
                 </p>
               </div>
-              <pre className="text-xs leading-relaxed bg-[#0d1117] text-[#e6edf3] rounded-lg p-4 overflow-x-auto">
+              <pre className="overflow-x-auto rounded-md bg-[#0d1117] p-4 text-xs leading-relaxed text-[#e6edf3]">
                 {previewDefinition}
               </pre>
             </>
           ) : (
-            <div className="rounded-md border border-red-500/30 bg-red-500/5 p-4 text-sm text-red-400">
+            <div className="rounded-sm border border-red-500/30 bg-red-500/5 p-4 text-sm text-red-400">
               {previewError ?? 'Fill in the form to generate a template preview.'}
             </div>
           )}

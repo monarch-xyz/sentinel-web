@@ -78,9 +78,9 @@ export function AppShell({ children }: AppShellProps) {
                         href={item.href}
                         aria-current={active ? 'page' : undefined}
                         className={cn(
-                          'inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm no-underline transition-colors',
+                          'inline-flex items-center gap-2 rounded-sm border px-4 py-2 text-sm no-underline transition-colors',
                           active
-                            ? 'border-[#ff6b35]/40 bg-[#ff6b35]/12 text-[#ff6b35]'
+                            ? 'border-[#ff6b35]/30 bg-background text-foreground'
                             : 'border-transparent bg-transparent text-secondary hover:border-border hover:bg-background/70 hover:text-foreground'
                         )}
                       >
@@ -93,9 +93,9 @@ export function AppShell({ children }: AppShellProps) {
 
                 <div className="flex items-center gap-2 self-start lg:self-auto">
                   <Link href="/signals/new" className="no-underline">
-                    <Button size="sm" className="gap-2">
+                    <Button size="sm" variant="secondary" className="gap-2">
                       <RiAddLine className="h-4 w-4" />
-                      New signal
+                      Create signal
                     </Button>
                   </Link>
                   <Button variant="secondary" size="sm" className="gap-2" onClick={handleLogout} disabled={isLoggingOut}>

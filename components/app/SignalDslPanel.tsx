@@ -43,32 +43,32 @@ export function SignalDslPanel({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-xs uppercase tracking-[0.3em] text-secondary">{eyebrow}</p>
-          <h2 className="mt-2 font-zen text-2xl font-semibold">{title}</h2>
+          <h2 className="mt-2 font-zen text-2xl">{title}</h2>
           <p className="mt-2 text-sm text-secondary">{(description ?? signal.description) || summary}</p>
         </div>
-        <div className="inline-flex h-fit items-center rounded-full border border-border bg-background/70 px-3 py-1 text-xs uppercase tracking-[0.25em] text-secondary">
+        <div className="inline-flex h-fit items-center rounded-sm border border-border bg-background/70 px-3 py-1 text-xs uppercase tracking-[0.25em] text-secondary">
           {signal.is_active ? 'Active' : 'Paused'}
         </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-lg border border-border/80 bg-background/50 p-4">
+        <div className="rounded-md border border-border/80 bg-background/50 p-4">
           <p className="text-xs uppercase tracking-[0.25em] text-secondary">Scope</p>
-          <p className="mt-2 text-sm font-medium text-foreground">{protocol.toUpperCase()}</p>
+          <p className="mt-2 text-sm text-foreground">{protocol.toUpperCase()}</p>
           <p className="mt-1 text-xs text-secondary">Chains {chainList || '—'}</p>
         </div>
-        <div className="rounded-lg border border-border/80 bg-background/50 p-4">
+        <div className="rounded-md border border-border/80 bg-background/50 p-4">
           <p className="text-xs uppercase tracking-[0.25em] text-secondary">Market</p>
           <p className="mt-2 break-all font-mono text-xs text-foreground">{marketId}</p>
         </div>
-        <div className="rounded-lg border border-border/80 bg-background/50 p-4">
+        <div className="rounded-md border border-border/80 bg-background/50 p-4">
           <p className="text-xs uppercase tracking-[0.25em] text-secondary">Trigger Logic</p>
-          <p className="mt-2 text-sm font-medium text-foreground">{logic}</p>
+          <p className="mt-2 text-sm text-foreground">{logic}</p>
           <p className="mt-1 text-xs text-secondary">{conditionCount} top-level conditions</p>
         </div>
-        <div className="rounded-lg border border-border/80 bg-background/50 p-4">
+        <div className="rounded-md border border-border/80 bg-background/50 p-4">
           <p className="text-xs uppercase tracking-[0.25em] text-secondary">Tracking</p>
-          <p className="mt-2 text-sm font-medium text-foreground">{trackedWallets} wallet{trackedWallets === 1 ? '' : 's'}</p>
+          <p className="mt-2 text-sm text-foreground">{trackedWallets} wallet{trackedWallets === 1 ? '' : 's'}</p>
           <p className="mt-1 text-xs text-secondary">
             Window {signal.definition.window.duration} · Cooldown {signal.cooldown_minutes}m
           </p>
@@ -77,15 +77,15 @@ export function SignalDslPanel({
 
       {showTimestamps ? (
         <div className="grid gap-3 sm:grid-cols-3">
-          <div className="rounded-lg border border-border/80 bg-background/50 p-4">
+          <div className="rounded-md border border-border/80 bg-background/50 p-4">
             <p className="text-xs uppercase tracking-[0.25em] text-secondary">Created</p>
             <p className="mt-2 text-sm text-foreground">{formatTimestamp(signal.created_at)}</p>
           </div>
-          <div className="rounded-lg border border-border/80 bg-background/50 p-4">
+          <div className="rounded-md border border-border/80 bg-background/50 p-4">
             <p className="text-xs uppercase tracking-[0.25em] text-secondary">Updated</p>
             <p className="mt-2 text-sm text-foreground">{formatTimestamp(signal.updated_at)}</p>
           </div>
-          <div className="rounded-lg border border-border/80 bg-background/50 p-4">
+          <div className="rounded-md border border-border/80 bg-background/50 p-4">
             <p className="text-xs uppercase tracking-[0.25em] text-secondary">Last Trigger</p>
             <p className="mt-2 text-sm text-foreground">{formatTimestamp(signal.last_triggered_at)}</p>
           </div>
@@ -94,12 +94,12 @@ export function SignalDslPanel({
 
       <div className="space-y-3">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-sm font-medium text-foreground">Raw DSL</p>
+          <p className="text-sm text-foreground">Raw DSL</p>
           <span className="text-xs text-secondary">JSON definition sent to Sentinel</span>
         </div>
         <pre
           className={cn(
-            'overflow-x-auto rounded-xl bg-[#0d1117] p-4 text-xs leading-relaxed text-[#e6edf3]',
+            'overflow-x-auto rounded-md bg-[#0d1117] p-4 text-xs leading-relaxed text-[#e6edf3]',
             compact ? 'max-h-[360px] overflow-y-auto' : ''
           )}
         >

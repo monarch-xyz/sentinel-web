@@ -18,7 +18,7 @@ export function SignalRow({ signal }: SignalRowProps) {
       <div className="min-w-0">
         <Link
           href={`/signals/${signal.id}`}
-          className="font-zen text-lg text-foreground hover:text-[#ff6b35] transition-colors no-underline"
+          className="font-zen text-lg text-foreground transition-colors hover:text-[#ff6b35] no-underline"
         >
           {signal.name}
         </Link>
@@ -44,7 +44,7 @@ export function SignalRow({ signal }: SignalRowProps) {
       <div className="sm:justify-self-end">
         <Link
           href={`/signals/${signal.id}`}
-          className="inline-flex items-center rounded-full border border-border px-3 py-1.5 text-sm text-secondary transition-colors no-underline hover:border-[#ff6b35]/30 hover:text-[#ff6b35]"
+          className="inline-flex items-center rounded-sm border border-border px-3 py-1.5 text-sm text-secondary transition-colors no-underline hover:border-[#ff6b35]/30 hover:text-[#ff6b35]"
         >
           View DSL
         </Link>

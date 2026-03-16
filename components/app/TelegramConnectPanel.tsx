@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { FormEvent, useState } from 'react';
-import { RiExternalLinkLine, RiTelegram2Line } from 'react-icons/ri';
+import { RiTelegram2Line } from 'react-icons/ri';
+import { TelegramSetupGuide } from '@/components/app/TelegramSetupGuide';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 
@@ -58,23 +59,17 @@ export function TelegramConnectPanel({ walletAddress }: TelegramConnectPanelProp
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-xs uppercase tracking-[0.3em] text-secondary">Telegram</p>
-          <h2 className="mt-2 font-zen text-2xl font-semibold">Link alerts to your Telegram chat</h2>
+          <h2 className="mt-2 font-zen text-2xl">Link alerts to your Telegram chat</h2>
+          <p className="mt-2 text-sm text-secondary">
+            Use this only when you are ready to deliver live signals into Telegram.
+          </p>
         </div>
-        <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[#229ED9]/10 text-[#229ED9]">
+        <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-[#229ED9]/10 text-[#229ED9]">
           <RiTelegram2Line className="h-5 w-5" />
         </div>
       </div>
 
-      <div className="space-y-3 text-sm text-secondary">
-        <p>Sentinel&apos;s delivery service documents a chat-link flow, not a separate channel registration flow.</p>
-        <ol className="list-decimal space-y-2 pl-5">
-          <li>Run the Delivery service and configure its Telegram bot token.</li>
-          <li>Send <span className="font-mono">/start</span> to the Telegram bot so it issues a short-lived link token.</li>
-          <li>Paste that token below and connect it to this Sentinel account.</li>
-        </ol>
-      </div>
-
-      <div className="rounded-md border border-border/80 bg-background/50 p-3 text-xs text-secondary">
+      <div className="rounded-sm border border-border/80 bg-background/50 p-3 text-xs text-secondary">
         {walletAddress ? (
           <span>
             Current wallet session: <span className="font-mono text-foreground">{walletAddress}</span>
@@ -92,7 +87,7 @@ export function TelegramConnectPanel({ walletAddress }: TelegramConnectPanelProp
             value={token}
             onChange={(event) => setToken(event.target.value)}
             placeholder="Paste the token returned by the bot"
-            className="rounded-md border border-border bg-transparent px-3 py-2 text-sm text-foreground"
+            className="rounded-sm border border-border bg-transparent px-3 py-2 text-sm text-foreground"
           />
         </label>
         <Button type="submit" disabled={!token || status === 'loading'}>
@@ -100,33 +95,18 @@ export function TelegramConnectPanel({ walletAddress }: TelegramConnectPanelProp
         </Button>
       </form>
 
+      <div className="flex flex-wrap items-center gap-3">
+        <TelegramSetupGuide triggerLabel="How linking works" triggerVariant="secondary" />
+        <Link href="/signals/new" className="text-sm text-secondary transition-colors hover:text-foreground no-underline">
+          Create a signal first
+        </Link>
+      </div>
+
       {message && (
         <p className={status === 'error' ? 'text-sm text-red-500' : 'text-sm text-emerald-600'}>
           {message}
         </p>
       )}
-
-      <div className="flex flex-wrap gap-3 text-sm">
-        <Link
-          href="https://github.com/monarch-xyz/sentinel/blob/main/docs/TELEGRAM_DELIVERY.md"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-2 text-secondary transition-colors hover:text-foreground no-underline"
-        >
-          Telegram delivery docs
-          <RiExternalLinkLine className="h-4 w-4" />
-        </Link>
-        <Link
-          href="https://github.com/monarch-xyz/sentinel/blob/main/packages/delivery/README.md"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-2 text-secondary transition-colors hover:text-foreground no-underline"
-        >
-          Delivery service setup
-          <RiExternalLinkLine className="h-4 w-4" />
-        </Link>
-      </div>
     </Card>
   );
 }
-

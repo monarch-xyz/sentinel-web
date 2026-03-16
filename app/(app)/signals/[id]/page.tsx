@@ -77,7 +77,7 @@ export default async function SignalDetailPage({ params }: SignalDetailPageProps
           <Link href="/signals" className="text-xs uppercase tracking-[0.3em] text-secondary no-underline transition-colors hover:text-foreground">
             Signals
           </Link>
-          <h1 className="font-zen text-3xl sm:text-4xl font-semibold">{signal.name}</h1>
+          <h1 className="font-zen text-3xl sm:text-4xl">{signal.name}</h1>
           <p className="text-secondary mt-2 max-w-3xl">Review the raw DSL, the recent evaluation history, and delivery attempts for this signal.</p>
         </div>
         <div className="flex flex-wrap gap-3">
@@ -93,15 +93,15 @@ export default async function SignalDetailPage({ params }: SignalDetailPageProps
       <SignalDslPanel signal={signal} title="Signal DSL structure" />
 
       <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-6">
-        <div className="bg-surface border border-border rounded-lg p-6">
-          <h2 className="font-zen text-xl font-semibold mb-4">Recent Evaluations</h2>
+        <div className="rounded-md border border-border bg-surface p-6">
+          <h2 className="mb-4 font-zen text-xl">Recent evaluations</h2>
           {history.evaluations.length > 0 ? (
             <div className="space-y-3">
               {history.evaluations.slice(0, 8).map((evaluation) => (
-                <div key={evaluation.id} className="rounded-md border border-border/80 bg-background/40 p-4">
+                <div key={evaluation.id} className="rounded-sm border border-border/80 bg-background/40 p-4">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <div>
-                      <p className="text-sm font-medium">{renderEvaluationLabel(evaluation)}</p>
+                      <p className="text-sm">{renderEvaluationLabel(evaluation)}</p>
                       <p className="text-xs text-secondary">{formatTimestamp(evaluation.evaluated_at)}</p>
                     </div>
                     <div className="text-xs text-secondary">
@@ -120,15 +120,15 @@ export default async function SignalDetailPage({ params }: SignalDetailPageProps
         </div>
       </div>
 
-      <div className="bg-surface border border-border rounded-lg p-6">
-        <h2 className="font-zen text-xl font-semibold mb-4">Recent Notifications</h2>
+      <div className="rounded-md border border-border bg-surface p-6">
+        <h2 className="mb-4 font-zen text-xl">Recent notifications</h2>
         {history.notifications.length > 0 ? (
           <div className="space-y-3">
             {history.notifications.slice(0, 8).map((notification) => (
-              <div key={notification.id} className="rounded-md border border-border/80 bg-background/40 p-4">
+              <div key={notification.id} className="rounded-sm border border-border/80 bg-background/40 p-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div>
-                    <p className="text-sm font-medium">{renderNotificationLabel(notification)}</p>
+                    <p className="text-sm">{renderNotificationLabel(notification)}</p>
                     <p className="text-xs text-secondary">{formatTimestamp(notification.triggered_at)}</p>
                   </div>
                   <div className="text-xs text-secondary">Retry count {notification.retry_count}</div>
