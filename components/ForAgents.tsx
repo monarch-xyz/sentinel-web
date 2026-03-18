@@ -7,11 +7,10 @@ import { GridDivider } from './ui/GridDivider';
 
 const agentCode = `// Your agent receives the same signal
 app.post('/sentinel-webhook', async (req, res) => {
-  const { result, scope } = req.body;
+  const { signal, result } = req.body;
   
-  if (result.change_percent < -20) {
-    // Smart money leaving — rebalance automatically
-    await rebalancePosition(scope.market_id);
+  if (signal.name === 'Polymarket breakout' && result.triggered) {
+    await updatePositioning();
   }
   
   res.status(200).send('OK');
@@ -39,22 +38,22 @@ export function ForAgents() {
               </h2>
               
               <p className="text-secondary leading-relaxed mb-6">
-                Building an AI agent? Sentinel becomes its eyes on-chain. Same signals, 
-                delivered via webhook. Your agent reacts to what matters — automatically.
+                Sentinel is built for agents first. Humans define the signal once, then agents receive the same
+                structured result through webhook delivery and react without custom parsing glue.
               </p>
 
               <ul className="space-y-3 text-secondary">
                 <li className="flex items-center gap-3">
                   <RiRobot2Line className="w-5 h-5 text-[#ff6b35]" />
-                  <span>Webhook delivery with HMAC signing</span>
+                  <span>One signal model for operators and agents</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <RiRobot2Line className="w-5 h-5 text-[#ff6b35]" />
-                  <span>Rich payload with full context</span>
+                  <span>Webhook delivery with structured context</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <RiRobot2Line className="w-5 h-5 text-[#ff6b35]" />
-                  <span>Idempotency keys for reliable processing</span>
+                  <span>Fast setup for opinionated automation</span>
                 </li>
               </ul>
             </motion.div>

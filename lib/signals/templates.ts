@@ -163,7 +163,75 @@ export const countTrackedWallets = (definition: SignalDefinition) => {
   return definition.scope.addresses?.length ?? 0;
 };
 
-export const getSignalMarketId = (definition: SignalDefinition) => definition.scope.markets?.[0] ?? '—';
+const extractMarketIdentifier = (value: string) => {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return '';
+  }
+
+  try {
+    const url = new URL(trimmed);
+    const lastPathSegment = url.pathname.split('/').filter(Boolean).at(-1);
+    if (lastPathSegment?.startsWith('0x')) {
+      return lastPathSegment.toLowerCase();
+    }
+  } catch {}
+
+  const hexMatch = trimmed.match(/0x[a-fA-F0-9]{8,}/g);
+  if (hexMatch && hexMatch.length > 0) {
+    return hexMatch[hexMatch.length - 1].toLowerCase();
+  }
+
+  return trimmed;
+};
+
+export const normalizeSignalMarketId = (value: string) => extractMarketIdentifier(value);
+
+export const getSignalMarketId = (definition: SignalDefinition) => {
+  const marketValue = definition.scope.markets?.[0];
+  if (!marketValue) {
+    return '—';
+  }
+
+  return normalizeSignalMarketId(marketValue);
+};
+
+export const getSignalPrimaryChainId = (definition: SignalDefinition): number | null => {
+  const scopeChainId = definition.scope.chains.find((chainId) => Number.isFinite(chainId));
+  if (typeof scopeChainId === 'number') {
+    return scopeChainId;
+  }
+
+  for (const condition of definition.conditions) {
+    if ('chain_id' in condition && typeof condition.chain_id === 'number') {
+      return condition.chain_id;
+    }
+
+    if (condition.type === 'group') {
+      const nestedChainId = condition.conditions.find(
+        (nestedCondition): nestedCondition is ChangeCondition => 'chain_id' in nestedCondition && typeof nestedCondition.chain_id === 'number'
+      )?.chain_id;
+
+      if (typeof nestedChainId === 'number') {
+        return nestedChainId;
+      }
+    }
+  }
+
+  return null;
+};
+
+export const getSignalMarketHref = (definition: SignalDefinition) => {
+  const marketValue = definition.scope.markets?.[0];
+  const chainId = getSignalPrimaryChainId(definition);
+  const marketId = marketValue ? normalizeSignalMarketId(marketValue) : '';
+
+  if (!marketId || chainId === null) {
+    return null;
+  }
+
+  return `https://www.monarchlend.xyz/market/${chainId}/${marketId}`;
+};
 
 export const buildWhaleMovementTemplate = (input: WhaleTemplateRequest): CreateSignalRequest => {
   const preset = getPreset(input.templateId);
@@ -173,7 +241,7 @@ export const buildWhaleMovementTemplate = (input: WhaleTemplateRequest): CreateS
   const dropPercent = input.dropPercent ?? preset.defaults.dropPercent;
   const windowDuration = input.windowDuration?.trim() || preset.defaults.windowDuration;
   const cooldownMinutes = input.cooldownMinutes ?? preset.defaults.cooldownMinutes;
-  const marketId = input.marketId.trim();
+  const marketId = normalizeSignalMarketId(input.marketId);
 
   if (!marketId) {
     throw new SignalTemplateError('Market ID is required.');

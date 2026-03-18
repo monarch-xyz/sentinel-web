@@ -37,7 +37,7 @@ export function Hero() {
               transition={{ duration: 0.5 }}
               className="mb-6"
             >
-              <SectionTag>DeFi Signals</SectionTag>
+              <SectionTag>Agent-First DSL</SectionTag>
             </motion.div>
 
             {/* Opening line */}
@@ -47,7 +47,7 @@ export function Hero() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="font-serif text-lg text-secondary mb-4 italic"
             >
-              148 events today. Which ones actually matter?
+              Subscribe once. Receive live updates.
             </motion.p>
 
             {/* Main headline */}
@@ -57,9 +57,9 @@ export function Hero() {
               transition={{ duration: 0.5, delay: 0.15 }}
               className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-8"
             >
-              Follow the
+              Describe exact
               <br />
-              <span className="text-[#ff6b35]">liquidity</span>.
+              <span className="text-[#ff6b35]">onchain intent</span>.
             </motion.h1>
 
             {/* Subtext */}
@@ -69,7 +69,7 @@ export function Hero() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-lg sm:text-xl text-secondary max-w-xl mb-10 leading-relaxed"
             >
-              Aggregate on-chain events into meaningful signals. Get alerted when smart money moves — not every time someone sneezes.
+              Sentinel is agent-first infrastructure for subscribing to dynamic onchain information through a precise DSL. You describe the exact condition you care about, and Sentinel evaluates it continuously and delivers the signal.
             </motion.p>
 
             {/* CTAs */}

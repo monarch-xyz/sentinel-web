@@ -179,9 +179,12 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio' }: SignalB
                 type="text"
                 value={formState.marketId}
                 onChange={(event) => updateField('marketId', event.target.value)}
-                placeholder="0xb8fc70e82bc5..."
+                placeholder="0xb8fc70e82bc5... or full Monarch URL"
                 className="rounded-sm border border-border bg-transparent px-3 py-2 text-sm text-foreground"
               />
+              <span className="text-xs text-secondary">
+                Chain is set separately. If you paste a Monarch market URL, Sentinel extracts and stores only the final market id.
+              </span>
             </label>
             <label className="flex flex-col gap-2 text-sm text-secondary">
               Chain ID

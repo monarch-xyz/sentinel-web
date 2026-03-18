@@ -1,79 +1,76 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { CodeBlock } from './ui/CodeBlock';
 import { SectionTag } from './ui/SectionTag';
 import { GridDivider } from './ui/GridDivider';
 
 const storyBeats = [
   {
     id: 'problem',
-    tag: 'The Problem',
-    title: 'Events aren\'t signals.',
-    content: `You're subscribed to on-chain events. Supply, withdraw, liquidation — hundreds per day. But which ones actually matter? You're drowning in noise, missing what counts.`,
-    code: `// Your current setup
-events.on("Supply", notify)    // 47 today
-events.on("Withdraw", notify)  // 89 today  
-events.on("Liquidate", notify) // 12 today
+    tag: 'Events In',
+    title: 'Raw feeds are too literal.',
+    content: `Subscribing to raw events is easy. Deciding which combinations actually matter is the hard part. Agents still end up reading noisy feeds and rebuilding the same logic again and again.`,
+    code: `events.on("Transfer", notify)
+events.on("Borrow", notify)
+events.on("Liquidate", notify)
+events.on("Redeem", notify)
 
-// 148 notifications.
-// How many actually mattered? 🤷`,
+// Raw event streams.
+// Too much activity, not enough intent.`,
   },
   {
     id: 'insight',
-    tag: 'The Insight',
-    title: 'Aggregate. Combine. Then alert.',
-    content: `Net deposit = deposits − withdrawals. When that drops 20% in a week from top holders? That's a signal. Not "someone withdrew" — but "smart money is leaving." One alert that actually means something.`,
-    code: `// What you actually care about
-{
-  "net_flow": "deposits - withdrawals",
-  "from": "top 10% holders",
-  "window": "7 days",
-  "alert_when": "drops 20%"
-}
-
-// Result: 3 signals last month.
-// All 3 preceded major price moves.`,
+    tag: 'Signal Out',
+    title: 'Use DSL to state what you mean.',
+    content: `The useful abstraction is a DSL that describes the actual state change you care about: specific scope, exact thresholds, time windows, and logic gates. That gives your agent a signal instead of a feed.`,
+    code: `{
+  "scope": { "chains": [1], "protocol": "all" },
+  "conditions": [
+    { "metric": "Price.deviationBps", "operator": "<=", "value": -10 },
+    { "metric": "Liquidity.availableUsd", "operator": "<", "value": 5000000 }
+  ],
+  "logic": "AND",
+  "window": { "duration": "2h" }
+}`,
   },
   {
     id: 'solution',
-    tag: 'The Solution',
-    title: 'Sentinel watches. You act.',
-    content: `Define your signal once. We continuously aggregate events, evaluate conditions across time windows, and alert you only when it matters. Follow the liquidity — see what's happening before the announcement.`,
+    tag: 'DSL Infrastructure',
+    title: 'Write intent. Rely on the infrastructure.',
+    content: `Your agent can use DSL to describe exactly what it wants, while Sentinel handles the hard part: continuous evaluation, stateful windows, logic composition, and reliable delivery. That keeps the signal definition precise without making the production path fragile.`,
     code: `POST /api/v1/signals
 {
-  "name": "Smart Money Exit",
-  "signal": {
-    "metric": "net_supply_flow",
-    "holders": "top_10_percent",
-    "window": "7d",
-    "threshold": { "change": "-20%" }
+  "name": "3 of 5 Morpho vault exits",
+  "definition": {
+    "scope": {
+      "chains": [1],
+      "markets": ["0x..."],
+      "protocol": "morpho"
+    },
+    "conditions": [
+      {
+        "type": "group",
+        "addresses": ["0x1...", "0x2...", "0x3...", "0x4...", "0x5..."],
+        "requirement": { "count": 3, "of": 5 },
+        "conditions": [
+          {
+            "type": "change",
+            "metric": "Morpho.Position.supplyShares",
+            "direction": "decrease",
+            "by": { "percent": 20 },
+            "window": { "duration": "1d" }
+          }
+        ]
+      }
+    ],
+    "logic": "AND",
+    "window": { "duration": "7d" }
   },
-  "notify": "telegram"
+  "notify": ["telegram", "webhook"]
 }`,
   },
 ];
-
-function CodeBlock({ code }: { code: string }) {
-  return (
-    <div className="relative rounded-lg overflow-hidden border border-border">
-      {/* Header bar */}
-      <div className="flex items-center gap-2 px-4 py-2.5 bg-surface border-b border-border">
-        <div className="flex gap-1.5">
-          <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
-          <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
-          <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
-        </div>
-      </div>
-      
-      {/* Code content */}
-      <pre className="p-4 bg-background text-sm overflow-x-auto">
-        <code className="font-mono text-secondary leading-relaxed whitespace-pre">
-          {code}
-        </code>
-      </pre>
-    </div>
-  );
-}
 
 export function Story() {
   return (
@@ -107,7 +104,7 @@ export function Story() {
               
               {/* Code side */}
               <div className={index % 2 === 1 ? 'lg:order-1' : ''}>
-                <CodeBlock code={beat.code} />
+                <CodeBlock code={beat.code} tone="light" />
               </div>
             </motion.div>
           ))}

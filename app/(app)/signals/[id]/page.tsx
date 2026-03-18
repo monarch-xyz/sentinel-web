@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { SignalDeleteButton } from '@/components/app/SignalDeleteButton';
 import { SignalDslPanel } from '@/components/app/SignalDslPanel';
 import { Button } from '@/components/ui/Button';
 import { getAuthenticatedUser } from '@/lib/auth/session';
@@ -87,6 +88,7 @@ export default async function SignalDetailPage({ params }: SignalDetailPageProps
           <Link href="/signals/new" className="no-underline">
             <Button>Create another</Button>
           </Link>
+          <SignalDeleteButton signalId={signal.id} signalName={signal.name} redirectTo="/signals" />
         </div>
       </div>
 

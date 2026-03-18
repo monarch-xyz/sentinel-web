@@ -1,7 +1,13 @@
 import { Card } from '@/components/ui/Card';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { cn } from '@/lib/utils';
-import { countTrackedWallets, describeSignalDefinition, getSignalMarketId } from '@/lib/signals/templates';
+import {
+  countTrackedWallets,
+  describeSignalDefinition,
+  getSignalMarketHref,
+  getSignalMarketId,
+  getSignalPrimaryChainId,
+} from '@/lib/signals/templates';
 import type { SignalRecord } from '@/lib/types/signal';
 
 interface SignalDslPanelProps {
@@ -38,6 +44,8 @@ export function SignalDslPanel({
   const logic = signal.definition.logic ?? 'AND';
   const protocol = signal.definition.scope.protocol ?? 'all';
   const chainList = signal.definition.scope.chains.join(', ');
+  const primaryChainId = getSignalPrimaryChainId(signal.definition);
+  const marketHref = getSignalMarketHref(signal.definition);
 
   return (
     <Card className={cn('space-y-5', className)}>
@@ -61,6 +69,16 @@ export function SignalDslPanel({
         <div className="rounded-md border border-border/80 bg-background/50 p-4">
           <p className="text-xs uppercase tracking-[0.25em] text-secondary">Market</p>
           <p className="mt-2 break-all font-mono text-xs text-foreground">{marketId}</p>
+          {marketHref && primaryChainId ? (
+            <a
+              href={marketHref}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-flex text-xs text-foreground no-underline transition-colors hover:text-[#ff6b35]"
+            >
+              Market on Chain {primaryChainId}
+            </a>
+          ) : null}
         </div>
         <div className="rounded-md border border-border/80 bg-background/50 p-4">
           <p className="text-xs uppercase tracking-[0.25em] text-secondary">Trigger Logic</p>
@@ -102,8 +120,9 @@ export function SignalDslPanel({
           <CodeBlock
             code={JSON.stringify(signal.definition, null, 2)}
             language="json"
+            tone="light"
             showHeader={false}
-            className="rounded-md border border-[#30363d]"
+            className="rounded-md"
           />
         </div>
       </div>

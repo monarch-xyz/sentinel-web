@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { SignalRowMenu } from '@/components/app/SignalRowMenu';
 import { countTrackedWallets, describeSignalDefinition, getSignalMarketId } from '@/lib/signals/templates';
 import { SignalRecord } from '@/lib/types/signal';
 
@@ -42,12 +43,7 @@ export function SignalRow({ signal }: SignalRowProps) {
         <p className="text-sm text-secondary">{updatedAt}</p>
       </div>
       <div className="sm:justify-self-end">
-        <Link
-          href={`/signals/${signal.id}`}
-          className="inline-flex items-center rounded-sm border border-border px-3 py-1.5 text-sm text-secondary transition-colors no-underline hover:border-[#ff6b35]/30 hover:text-[#ff6b35]"
-        >
-          View DSL
-        </Link>
+        <SignalRowMenu signalId={signal.id} signalName={signal.name} />
       </div>
     </div>
   );
