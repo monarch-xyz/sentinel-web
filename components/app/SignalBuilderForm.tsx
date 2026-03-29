@@ -193,7 +193,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
   const previewTitle = isWhalePreset ? 'Morpho whale movement signal' : 'ERC-20 transfer flow signal';
   const previewDescription = isWhalePreset
     ? 'Enter a market plus the supplier wallets you want to watch. This UI creates a Sentinel group-change signal behind the scenes.'
-    : 'Track raw ERC-20 Transfer volume into or out of one address. Pair an inflow and outflow watch for the same asset when you want a practical net-flow view.';
+    : 'Track gross raw ERC-20 Transfer volume into or out of one address. This is flow monitoring, not true net balance change.';
 
   const previewStats = isWhalePreset
     ? [
@@ -386,7 +386,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
             </label>
           ) : (
             <div className="mt-4 rounded-sm border border-border/80 bg-background/50 p-4 text-sm text-secondary">
-              This template uses raw ERC-20 `Transfer` logs. Thresholds are compared against token base units, not formatted token decimals. Pair the inflow and outflow templates on the same token and address if you want a practical net-flow view. Raw-event templates also require raw-event support in Sentinel.
+              This template uses raw ERC-20 `Transfer` logs. Thresholds are compared against token base units, not formatted token decimals. It measures gross flow only, not true net balance change. Raw-event templates also require raw-event support in Sentinel.
             </div>
           )}
 

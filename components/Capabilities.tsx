@@ -21,7 +21,7 @@ const useCases: UseCase[] = [
     title: 'Liquidity crisis',
     summary: 'Morpho market stress with coordinated vault exits and rising borrow pressure.',
     details: [
-      '3 of 5 tracked vaults withdraw more than 20% net over 1 day.',
+      '3 of 5 tracked vaults reduce supply by more than 20% over 1 day.',
       'Borrow APY increases more than 20% over 2 days.',
       'Both conditions must hold together through an AND gate.',
     ],

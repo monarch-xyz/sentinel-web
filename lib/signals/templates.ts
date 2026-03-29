@@ -136,7 +136,7 @@ export const SIGNAL_TEMPLATE_PRESETS: SignalTemplatePreset[] = [
     id: 'erc20-inflow-watch',
     kind: 'erc20-transfer',
     title: 'ERC-20 Inflow Watch',
-    description: 'Sum inbound ERC-20 transfers to one address and trigger when the inflow exceeds a threshold.',
+    description: 'Sum gross inbound ERC-20 transfers to one address and trigger when that inflow exceeds a threshold.',
     accent: 'sum(value) to address',
     direction: 'inflow',
     defaults: {
@@ -150,7 +150,7 @@ export const SIGNAL_TEMPLATE_PRESETS: SignalTemplatePreset[] = [
     id: 'erc20-outflow-watch',
     kind: 'erc20-transfer',
     title: 'ERC-20 Outflow Watch',
-    description: 'Sum outbound ERC-20 transfers from one address and trigger when the outflow exceeds a threshold.',
+    description: 'Sum gross outbound ERC-20 transfers from one address and trigger when that outflow exceeds a threshold.',
     accent: 'sum(value) from address',
     direction: 'outflow',
     defaults: {
@@ -686,7 +686,7 @@ export const buildErc20TransferTemplate = (input: Erc20TransferTemplateRequest):
   return buildManagedTelegramSignal(
     input.name?.trim() || generatedName,
     input.description?.trim() ||
-      `Watches ERC-20 Transfer logs for ${tokenContract} and triggers when ${directionLabel} for ${watchedAddress} exceeds ${amountThreshold} base units over ${windowDuration}. Pair it with the opposite direction template if you want a practical net-flow view.`,
+      `Watches ERC-20 Transfer logs for ${tokenContract} and triggers when gross ${directionLabel} for ${watchedAddress} exceeds ${amountThreshold} base units over ${windowDuration}.`,
     definition,
     cooldownMinutes
   );
