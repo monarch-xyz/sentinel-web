@@ -5,14 +5,31 @@ import { RiRobot2Line } from 'react-icons/ri';
 import { SectionTag } from './ui/SectionTag';
 import { GridDivider } from './ui/GridDivider';
 
-const agentCode = `// Your agent receives the same signal
-app.post('/sentinel-webhook', async (req, res) => {
-  const { signal, result } = req.body;
-  
-  if (signal.name === 'Polymarket breakout' && result.triggered) {
-    await updatePositioning();
+const agentCode = `app.post('/sentinel-webhook', async (req, res) => {
+  const {
+    signal_id,
+    signal_name,
+    triggered_at,
+    scope,
+    conditions_met,
+    context,
+  } = req.body;
+
+  // The documented webhook payload does not currently include
+  // signal.description, so route off the fields Sentinel sends.
+  if (signal_name !== 'Morpho Whale Exit') {
+    return res.status(200).send('Ignored');
   }
-  
+
+  await handleMorphoExit({
+    signalId: signal_id,
+    triggeredAt: triggered_at,
+    chainId: context?.chain_id,
+    marketId: context?.market_id,
+    watchedAddresses: scope?.addresses ?? [],
+    matchedConditions: conditions_met,
+  });
+
   res.status(200).send('OK');
 });`;
 

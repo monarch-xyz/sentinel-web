@@ -3,7 +3,7 @@
 import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { RiAddLine, RiDashboardLine, RiFlashlightLine, RiLogoutCircleRLine, RiTelegram2Line } from 'react-icons/ri';
+import { RiAddLine, RiBookOpenLine, RiDashboardLine, RiFlashlightLine, RiLogoutCircleRLine, RiTelegram2Line } from 'react-icons/ri';
 import { Button } from '@/components/ui/Button';
 import { buildLoginHref } from '@/lib/auth/redirect';
 import { buildTemplateEntryPath } from '@/lib/telegram/setup-flow';
@@ -18,6 +18,7 @@ const navItems = [
   { href: '/app', label: 'Dashboard', icon: RiDashboardLine },
   { href: '/signals', label: 'Signals', icon: RiFlashlightLine },
   { href: '/telegram', label: 'Telegram', icon: RiTelegram2Line },
+  { href: '/docs', label: 'Docs', icon: RiBookOpenLine },
 ];
 
 const isActivePath = (pathname: string | null, href: string) => {
