@@ -6,6 +6,7 @@ import type {
   MorphoVaultHolder,
   MorphoVaultSummary,
 } from '@/lib/morpho-discovery/types';
+import { normalizeMorphoMarketAssetSymbol } from '@/lib/morpho-discovery/market-utils';
 
 const MORPHO_GRAPHQL_URL = 'https://api.morpho.org/graphql';
 
@@ -200,8 +201,8 @@ export const listMorphoMarkets = async ({
     markets: {
       items: Array<{
         marketId: string;
-        loanAsset: { symbol: string };
-        collateralAsset: { symbol: string };
+        loanAsset: { symbol: string | null } | null;
+        collateralAsset: { symbol: string | null } | null;
         state: { supplyAssetsUsd: number; borrowAssetsUsd: number; utilization: number };
       }>;
     };
@@ -226,16 +227,36 @@ export const listMorphoMarkets = async ({
     { chainId }
   );
 
+  const normalizedItems = data.markets.items.map((market) => {
+    const loanAssetSymbol = normalizeMorphoMarketAssetSymbol(
+      market.loanAsset?.symbol,
+      'Unknown loan asset'
+    );
+    const collateralAssetSymbol = normalizeMorphoMarketAssetSymbol(
+      market.collateralAsset?.symbol,
+      'No collateral'
+    );
+
+    return {
+      marketId: market.marketId,
+      loanAssetSymbol,
+      collateralAssetSymbol,
+      supplyAssetsUsd: market.state.supplyAssetsUsd,
+      borrowAssetsUsd: market.state.borrowAssetsUsd,
+      utilization: market.state.utilization,
+    };
+  });
+
   const normalizedSearch = normalizeSearch(search);
-  const filtered = data.markets.items.filter((market) => {
+  const filtered = normalizedItems.filter((market) => {
     if (!normalizedSearch) {
       return true;
     }
 
     return [
-      `${market.loanAsset.symbol}/${market.collateralAsset.symbol}`,
-      market.loanAsset.symbol,
-      market.collateralAsset.symbol,
+      `${market.loanAssetSymbol}/${market.collateralAssetSymbol}`,
+      market.loanAssetSymbol,
+      market.collateralAssetSymbol,
       market.marketId,
     ]
       .filter(Boolean)
@@ -245,11 +266,11 @@ export const listMorphoMarkets = async ({
   return filtered.slice(0, clampLimit(limit, 100)).map((market) => ({
     marketId: market.marketId,
     chainId,
-    loanAssetSymbol: market.loanAsset.symbol,
-    collateralAssetSymbol: market.collateralAsset.symbol,
-    supplyAssetsUsd: market.state.supplyAssetsUsd,
-    borrowAssetsUsd: market.state.borrowAssetsUsd,
-    utilization: market.state.utilization,
+    loanAssetSymbol: market.loanAssetSymbol,
+    collateralAssetSymbol: market.collateralAssetSymbol,
+    supplyAssetsUsd: market.supplyAssetsUsd,
+    borrowAssetsUsd: market.borrowAssetsUsd,
+    utilization: market.utilization,
   }));
 };
 
