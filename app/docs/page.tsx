@@ -6,7 +6,7 @@ import { Header } from '@/components/Header';
 export const metadata: Metadata = {
   title: 'Docs',
   description:
-    'Customer-facing Sentinel docs: raw state via state_ref, metric sugar, indexed metrics, raw-event presets, auth, delivery, and routes.',
+    'Customer-facing Sentinel docs: raw state via state_ref, metric sugar, indexed metrics, raw-event presets, repeat policy, history, auth, delivery, and routes.',
 };
 
 export default function DocsPage() {

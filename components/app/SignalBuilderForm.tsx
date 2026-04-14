@@ -9,6 +9,7 @@ import {
   RiExchangeDollarLine,
   RiUserSearchLine,
 } from 'react-icons/ri';
+import { RepeatPolicyFields } from '@/components/app/RepeatPolicyFields';
 import { SignalPresetCard } from '@/components/app/SignalPresetCard';
 import { Button } from '@/components/ui/Button';
 import { HelpHint } from '@/components/ui/HelpHint';
@@ -22,7 +23,9 @@ import {
   type SignalTemplateId,
   type SignalTemplateRequest,
 } from '@/lib/signals/templates';
+import { buildSignalRepeatPolicy } from '@/lib/signals/repeat-policy';
 import { CodeBlock } from '@/components/ui/CodeBlock';
+import type { SignalRepeatPolicyMode } from '@/lib/types/signal';
 
 interface BuilderFormState {
   name: string;
@@ -39,6 +42,8 @@ interface BuilderFormState {
   amountThreshold: string;
   windowDuration: string;
   cooldownMinutes: string;
+  repeatMode: SignalRepeatPolicyMode;
+  snoozeMinutes: string;
 }
 
 interface SignalBuilderFormProps {
@@ -94,6 +99,8 @@ const buildDefaultState = (templateId: SignalTemplateId): BuilderFormState => {
     amountThreshold: preset.kind === 'erc20-transfer' ? String(preset.defaults.amountThreshold) : '1000000',
     windowDuration: preset.defaults.windowDuration,
     cooldownMinutes: String(preset.defaults.cooldownMinutes),
+    repeatMode: 'cooldown',
+    snoozeMinutes: '1440',
   };
 };
 
@@ -158,6 +165,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
           dropPercent: Number(formState.dropPercent),
           windowDuration: formState.windowDuration,
           cooldownMinutes: Number(formState.cooldownMinutes),
+          repeatPolicy: buildSignalRepeatPolicy(formState.repeatMode, Number(formState.snoozeMinutes)),
           name: formState.name,
           description: formState.description,
         }
@@ -170,6 +178,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
             amountThreshold: Number(formState.amountThreshold),
             windowDuration: formState.windowDuration,
             cooldownMinutes: Number(formState.cooldownMinutes),
+            repeatPolicy: buildSignalRepeatPolicy(formState.repeatMode, Number(formState.snoozeMinutes)),
             name: formState.name,
             description: formState.description,
           }
@@ -182,6 +191,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
             dropPercent: Number(formState.dropPercent),
             windowDuration: formState.windowDuration,
             cooldownMinutes: Number(formState.cooldownMinutes),
+            repeatPolicy: buildSignalRepeatPolicy(formState.repeatMode, Number(formState.snoozeMinutes)),
             name: formState.name,
             description: formState.description,
           };
@@ -206,6 +216,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
         definition: previewPayload.definition,
         delivery: previewPayload.delivery,
         cooldown_minutes: previewPayload.cooldown_minutes,
+        repeat_policy: previewPayload.repeat_policy,
       },
       null,
       2
@@ -473,16 +484,14 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
               />
             </label>
 
-            <label className="flex flex-col gap-2 text-sm text-secondary">
-              Cooldown (minutes)
-              <input
-                type="number"
-                min="0"
-                value={formState.cooldownMinutes}
-                onChange={(event) => updateField('cooldownMinutes', event.target.value)}
-                className="rounded-sm border border-border bg-transparent px-3 py-2 text-sm text-foreground"
-              />
-            </label>
+            <RepeatPolicyFields
+              mode={formState.repeatMode}
+              cooldownMinutes={formState.cooldownMinutes}
+              snoozeMinutes={formState.snoozeMinutes}
+              onModeChange={(value) => updateField('repeatMode', value)}
+              onCooldownMinutesChange={(value) => updateField('cooldownMinutes', value)}
+              onSnoozeMinutesChange={(value) => updateField('snoozeMinutes', value)}
+            />
 
             <label className="flex flex-col gap-2 text-sm text-secondary sm:col-span-2">
               Description

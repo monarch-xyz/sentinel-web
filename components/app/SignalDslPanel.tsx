@@ -1,5 +1,6 @@
 import { Card } from '@/components/ui/Card';
 import { CodeBlock } from '@/components/ui/CodeBlock';
+import { describeSignalRepeatPolicy } from '@/lib/signals/repeat-policy';
 import { cn } from '@/lib/utils';
 import {
   describeSignalDefinition,
@@ -42,6 +43,7 @@ export function SignalDslPanel({
   const chainList = signal.definition.scope.chains.join(', ');
   const focus = getSignalFocusDetails(signal.definition);
   const trackingSummary = getSignalTrackingSummary(signal.definition);
+  const repeatPolicySummary = describeSignalRepeatPolicy(signal.repeat_policy, signal.cooldown_minutes);
 
   return (
     <Card className={cn('space-y-5', className)}>
@@ -87,7 +89,7 @@ export function SignalDslPanel({
           <p className="text-xs uppercase tracking-[0.25em] text-secondary">Tracking</p>
           <p className="mt-2 text-sm text-foreground">{trackingSummary}</p>
           <p className="mt-1 text-xs text-secondary">
-            Window {signal.definition.window.duration} · Cooldown {signal.cooldown_minutes}m
+            Window {signal.definition.window.duration} · {repeatPolicySummary}
           </p>
         </div>
       </div>

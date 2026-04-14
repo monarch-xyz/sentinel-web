@@ -8,7 +8,7 @@ import {
   HUMAN_SIGNAL_CATEGORIES,
   getCreateSignalPersona,
   getHumanSignalCategory,
-} from './create-flow-catalog.ts';
+} from './create-flow-catalog';
 
 test('create-flow personas stay explicit and ordered', () => {
   assert.deepEqual(

@@ -113,7 +113,8 @@ events.on("Transfer", notify)
     "window": { "duration": "7d" }
   },
   "delivery": { "provider": "telegram" },
-  "cooldown_minutes": 60
+  "cooldown_minutes": 60,
+  "repeat_policy": { "mode": "until_resolved" }
 }`,
   },
 ];

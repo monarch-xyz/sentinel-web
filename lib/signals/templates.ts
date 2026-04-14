@@ -6,8 +6,10 @@ import type {
   RawEventsCondition,
   SignalCondition,
   SignalDefinition,
+  SignalRepeatPolicy,
   SignalRecord,
 } from '@/lib/types/signal';
+import { DEFAULT_SIGNAL_REPEAT_POLICY, normalizeSignalRepeatPolicy } from '@/lib/signals/repeat-policy';
 
 export type SignalTemplateKind = 'morpho-whale' | 'erc20-transfer' | 'erc4626-withdraw';
 
@@ -72,6 +74,7 @@ interface BaseTemplateRequest<TId extends SignalTemplateId> {
   chainId?: number;
   windowDuration?: string;
   cooldownMinutes?: number;
+  repeatPolicy?: SignalRepeatPolicy;
   name?: string;
   description?: string;
 }
@@ -246,11 +249,22 @@ const assertNonNegativeCooldown = (value: number) => {
   }
 };
 
+const assertRepeatPolicy = (repeatPolicy: SignalRepeatPolicy) => {
+  if (repeatPolicy.mode !== 'post_first_alert_snooze') {
+    return;
+  }
+
+  if (!Number.isInteger(repeatPolicy.snooze_minutes) || repeatPolicy.snooze_minutes < 1) {
+    throw new SignalTemplateError('Snooze minutes must be a positive integer.');
+  }
+};
+
 const buildManagedTelegramSignal = (
   name: string,
   description: string,
   definition: SignalDefinition,
-  cooldownMinutes: number
+  cooldownMinutes: number,
+  repeatPolicy: SignalRepeatPolicy = DEFAULT_SIGNAL_REPEAT_POLICY
 ): CreateSignalRequest => ({
   name,
   description,
@@ -259,6 +273,7 @@ const buildManagedTelegramSignal = (
     provider: 'telegram',
   },
   cooldown_minutes: cooldownMinutes,
+  repeat_policy: repeatPolicy,
 });
 
 export const parseWhaleAddresses = (value: string[] | string) => {
@@ -642,6 +657,7 @@ export const buildWhaleMovementTemplate = (input: WhaleTemplateRequest): CreateS
   const dropPercent = input.dropPercent ?? preset.defaults.dropPercent;
   const windowDuration = input.windowDuration?.trim() || preset.defaults.windowDuration;
   const cooldownMinutes = input.cooldownMinutes ?? preset.defaults.cooldownMinutes;
+  const repeatPolicy = normalizeSignalRepeatPolicy(input.repeatPolicy);
   const marketId = normalizeSignalMarketId(input.marketId);
 
   assertPositiveChainId(chainId);
@@ -663,6 +679,7 @@ export const buildWhaleMovementTemplate = (input: WhaleTemplateRequest): CreateS
   }
 
   assertNonNegativeCooldown(cooldownMinutes);
+  assertRepeatPolicy(repeatPolicy);
 
   const definition: SignalDefinition = {
     scope: {
@@ -712,7 +729,8 @@ export const buildWhaleMovementTemplate = (input: WhaleTemplateRequest): CreateS
     input.description?.trim() ||
       `Watches ${whaleAddresses.length} Morpho supplier wallets and triggers when ${requiredCount} of them reduce the canonical Morpho supply-share state by at least ${dropPercent}% over ${windowDuration}.`,
     definition,
-    cooldownMinutes
+    cooldownMinutes,
+    repeatPolicy
   );
 };
 
@@ -725,6 +743,7 @@ export const buildErc20TransferTemplate = (input: Erc20TransferTemplateRequest):
   const chainId = input.chainId ?? preset.defaults.chainId;
   const windowDuration = input.windowDuration?.trim() || preset.defaults.windowDuration;
   const cooldownMinutes = input.cooldownMinutes ?? preset.defaults.cooldownMinutes;
+  const repeatPolicy = normalizeSignalRepeatPolicy(input.repeatPolicy);
   const amountThreshold = input.amountThreshold ?? preset.defaults.amountThreshold;
   const tokenContract = parseRequiredAddress(input.tokenContract, 'Token contract address');
   const watchedAddress = parseRequiredAddress(input.watchedAddress, 'Watched address');
@@ -737,6 +756,7 @@ export const buildErc20TransferTemplate = (input: Erc20TransferTemplateRequest):
   }
 
   assertNonNegativeCooldown(cooldownMinutes);
+  assertRepeatPolicy(repeatPolicy);
 
   const definition: SignalDefinition = {
     scope: {
@@ -782,7 +802,8 @@ export const buildErc20TransferTemplate = (input: Erc20TransferTemplateRequest):
     input.description?.trim() ||
       `Uses the Sentinel raw-events ERC-20 transfer preset for ${tokenContract} and triggers when gross ${directionLabel} for ${watchedAddress} exceeds ${amountThreshold} base units over ${windowDuration}.`,
     definition,
-    cooldownMinutes
+    cooldownMinutes,
+    repeatPolicy
   );
 };
 
@@ -797,6 +818,7 @@ export const buildErc4626WithdrawTemplate = (input: Erc4626WithdrawTemplateReque
   const requiredCount = input.requiredCount ?? preset.defaults.requiredCount;
   const windowDuration = input.windowDuration?.trim() || preset.defaults.windowDuration;
   const cooldownMinutes = input.cooldownMinutes ?? preset.defaults.cooldownMinutes;
+  const repeatPolicy = normalizeSignalRepeatPolicy(input.repeatPolicy);
   const dropPercent = input.dropPercent ?? preset.defaults.dropPercent;
   const vaultContract = parseRequiredAddress(input.vaultContract, 'Vault contract address');
 
@@ -815,6 +837,7 @@ export const buildErc4626WithdrawTemplate = (input: Erc4626WithdrawTemplateReque
   }
 
   assertNonNegativeCooldown(cooldownMinutes);
+  assertRepeatPolicy(repeatPolicy);
 
   const definition: SignalDefinition = {
     scope: {
@@ -864,7 +887,8 @@ export const buildErc4626WithdrawTemplate = (input: Erc4626WithdrawTemplateReque
     input.description?.trim() ||
       `Watches archive-RPC ERC-4626 share balances for ${ownerAddresses.length} owners in vault ${vaultContract} and triggers when ${requiredCount} of them reduce shares by at least ${dropPercent}% over ${windowDuration}.`,
     definition,
-    cooldownMinutes
+    cooldownMinutes,
+    repeatPolicy
   );
 };
 

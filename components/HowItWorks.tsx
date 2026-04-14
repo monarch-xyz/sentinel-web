@@ -20,7 +20,9 @@ const steps = [
     description: 'Register your query via API once. Sentinel continuously evaluates state changes and smart filters.',
     code: `POST /api/v1/signals
 X-API-Key: sentinel_...
-{ "name": "High-Signal Watch", ... }`,
+{ "name": "High-Signal Watch",
+  "repeat_policy": { "mode": "cooldown" },
+  ... }`,
   },
   {
     icon: RiNotification3Line,

@@ -24,7 +24,7 @@ const endpoints = [
   {
     method: 'POST',
     path: '/api/v1/signals',
-    description: 'Create a signal from the current DSL, including state aliases and raw-events definitions.',
+    description: 'Create a signal from the current DSL, including repeat policy, state aliases, and raw-events definitions.',
   },
   {
     method: 'POST',

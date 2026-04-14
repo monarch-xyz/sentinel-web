@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeMorphoMarketAssetSymbol } from './market-utils.ts';
+import { normalizeMorphoMarketAssetSymbol } from './market-utils';
 
 test('normalizeMorphoMarketAssetSymbol keeps non-empty symbols', () => {
   assert.equal(normalizeMorphoMarketAssetSymbol('WETH', 'No collateral'), 'WETH');

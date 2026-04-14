@@ -16,7 +16,7 @@ Goal:
 
 Return:
 - the final signal JSON
-- a short explanation of the scope, condition, and delivery settings`;
+- a short explanation of the scope, condition, delivery settings, and repeat_policy choice`;
 
 export function AgentSignalGuide() {
   return (

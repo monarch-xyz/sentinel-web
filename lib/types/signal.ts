@@ -127,6 +127,26 @@ export interface ManagedSignalDelivery {
   provider: 'telegram';
 }
 
+export type SignalRepeatPolicyMode = 'cooldown' | 'post_first_alert_snooze' | 'until_resolved';
+
+export interface CooldownRepeatPolicy {
+  mode: 'cooldown';
+}
+
+export interface PostFirstAlertSnoozeRepeatPolicy {
+  mode: 'post_first_alert_snooze';
+  snooze_minutes: number;
+}
+
+export interface UntilResolvedRepeatPolicy {
+  mode: 'until_resolved';
+}
+
+export type SignalRepeatPolicy =
+  | CooldownRepeatPolicy
+  | PostFirstAlertSnoozeRepeatPolicy
+  | UntilResolvedRepeatPolicy;
+
 export interface SignalRecord {
   id: string;
   user_id?: string;
@@ -136,6 +156,7 @@ export interface SignalRecord {
   webhook_url: string;
   delivery?: ManagedSignalDelivery;
   cooldown_minutes: number;
+  repeat_policy?: SignalRepeatPolicy | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -150,6 +171,7 @@ export interface CreateSignalRequest {
   webhook_url?: string;
   delivery?: ManagedSignalDelivery;
   cooldown_minutes?: number;
+  repeat_policy?: SignalRepeatPolicy;
 }
 
 export interface UpdateSignalRequest {
@@ -159,7 +181,30 @@ export interface UpdateSignalRequest {
   webhook_url?: string;
   delivery?: ManagedSignalDelivery;
   cooldown_minutes?: number;
+  repeat_policy?: SignalRepeatPolicy;
   is_active?: boolean;
+}
+
+export interface SignalConditionExplanation {
+  conditionIndex: number;
+  conditionType: string;
+  triggered: boolean;
+  summary: string;
+  matchedAddresses?: string[];
+  window?: string;
+  operator?: string;
+  leftValue?: unknown;
+  rightValue?: unknown;
+  [key: string]: unknown;
+}
+
+export interface SignalEvaluationMetadata {
+  logic?: 'AND' | 'OR';
+  scope?: SignalScope;
+  repeat_policy?: SignalRepeatPolicy;
+  condition_results?: SignalConditionExplanation[];
+  conditions_met?: SignalConditionExplanation[];
+  [key: string]: unknown;
 }
 
 export interface SignalRunLogEntry {
@@ -175,20 +220,32 @@ export interface SignalRunLogEntry {
   error_message?: string | null;
   evaluation_duration_ms?: number | null;
   delivery_duration_ms?: number | null;
-  metadata?: Record<string, unknown> | null;
+  logic?: 'AND' | 'OR';
+  scope?: SignalScope;
+  condition_results?: SignalConditionExplanation[];
+  conditions_met?: SignalConditionExplanation[];
+  metadata?: SignalEvaluationMetadata | null;
   created_at: string;
+}
+
+export interface SignalNotificationPayload {
+  scope?: SignalScope;
+  conditions_met?: SignalConditionExplanation[];
+  context?: Record<string, unknown>;
+  [key: string]: unknown;
 }
 
 export interface SignalNotificationLogEntry {
   id: string;
   signal_id: string;
   triggered_at: string;
-  payload: Record<string, unknown>;
+  payload: SignalNotificationPayload;
   webhook_status?: number | null;
   error_message?: string | null;
   retry_count: number;
   evaluation_duration_ms?: number | null;
   delivery_duration_ms?: number | null;
+  conditions_met?: SignalConditionExplanation[];
   created_at: string;
   delivered_at?: string | null;
 }

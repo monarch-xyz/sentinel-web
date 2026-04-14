@@ -13,7 +13,7 @@ const examples = [
     title: 'Whale Exit Alert',
     description: 'Create a real signal payload for a coordinated supplier exit over 7 days',
     filename: 'whale-alert.json',
-    highlightLines: [3, 11, 18, 30],
+    highlightLines: [3, 11, 18, 30, 32],
     code: `{
   "name": "Whale Exit Alert",
   "definition": {
@@ -42,7 +42,8 @@ const examples = [
     }]
   },
   "webhook_url": "https://your-agent.com/alerts",
-  "cooldown_minutes": 60
+  "cooldown_minutes": 60,
+  "repeat_policy": { "mode": "until_resolved" }
 }`,
   },
   {
@@ -51,7 +52,7 @@ const examples = [
     title: 'Utilization Spike',
     description: 'Use a selected common state alias backed by generic RPC state reads',
     filename: 'utilization-alert.json',
-    highlightLines: [3, 10, 11],
+    highlightLines: [3, 10, 11, 20],
     code: `{
   "name": "High Utilization Warning",
   "definition": {
@@ -71,7 +72,8 @@ const examples = [
     }]
   },
   "webhook_url": "https://your-agent.com/alerts",
-  "cooldown_minutes": 15
+  "cooldown_minutes": 15,
+  "repeat_policy": { "mode": "cooldown" }
 }`,
   },
   {
@@ -80,7 +82,7 @@ const examples = [
     title: 'Raw Swap Scan',
     description: 'Use the raw-events swap preset to sum normalized DEX activity in a window',
     filename: 'raw-events-alert.json',
-    highlightLines: [3, 11, 15, 22],
+    highlightLines: [3, 11, 15, 22, 27],
     code: `{
   "name": "Swap Volume Burst",
   "definition": {
@@ -105,7 +107,8 @@ const examples = [
     }]
   },
   "webhook_url": "https://your-agent.com/swap-events",
-  "cooldown_minutes": 10
+  "cooldown_minutes": 10,
+  "repeat_policy": { "mode": "post_first_alert_snooze", "snooze_minutes": 1440 }
 }`,
   },
 ];
@@ -140,7 +143,7 @@ export function CodeExamples() {
             Real <span className="text-[#ff6b35]">Examples</span>
           </h2>
           <p className="text-secondary text-lg max-w-2xl mx-auto">
-            Current create-signal payloads, including canonical state aliases and the broader `raw-events` catalog.
+            Current create-signal payloads, including repeat policy, canonical state aliases, and the broader `raw-events` catalog.
           </p>
         </motion.div>
 

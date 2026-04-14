@@ -3,11 +3,14 @@
 import { useDeferredValue, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { RiArrowRightLine, RiSearchLine } from 'react-icons/ri';
+import { RepeatPolicyFields } from '@/components/app/RepeatPolicyFields';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { CodeBlock } from '@/components/ui/CodeBlock';
+import { buildSignalRepeatPolicy } from '@/lib/signals/repeat-policy';
 import { buildSignalTemplate, describeSignalDefinition, type SignalTemplateRequest } from '@/lib/signals/templates';
 import type { SupportedVaultProtocolId, VaultHolder, VaultSummary } from '@/lib/vault-discovery/types';
+import type { SignalRepeatPolicyMode } from '@/lib/types/signal';
 
 interface VaultUseCaseBuilderProps {
   protocol: SupportedVaultProtocolId;
@@ -49,6 +52,8 @@ export function VaultUseCaseBuilder({ protocol }: VaultUseCaseBuilderProps) {
   const [dropPercent, setDropPercent] = useState('20');
   const [windowDuration, setWindowDuration] = useState('7d');
   const [cooldownMinutes, setCooldownMinutes] = useState('60');
+  const [repeatMode, setRepeatMode] = useState<SignalRepeatPolicyMode>('cooldown');
+  const [snoozeMinutes, setSnoozeMinutes] = useState('1440');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [resultsLoading, setResultsLoading] = useState(false);
@@ -178,6 +183,7 @@ export function VaultUseCaseBuilder({ protocol }: VaultUseCaseBuilderProps) {
     dropPercent: Number(dropPercent),
     windowDuration,
     cooldownMinutes: Number(cooldownMinutes),
+    repeatPolicy: buildSignalRepeatPolicy(repeatMode, Number(snoozeMinutes)),
     name,
     description,
   };
@@ -195,6 +201,7 @@ export function VaultUseCaseBuilder({ protocol }: VaultUseCaseBuilderProps) {
         definition: previewPayload.definition,
         delivery: previewPayload.delivery,
         cooldown_minutes: previewPayload.cooldown_minutes,
+        repeat_policy: previewPayload.repeat_policy,
       },
       null,
       2
@@ -415,16 +422,14 @@ export function VaultUseCaseBuilder({ protocol }: VaultUseCaseBuilderProps) {
               />
             </label>
 
-            <label className="flex flex-col gap-2 text-sm text-secondary">
-              Cooldown (minutes)
-              <input
-                type="number"
-                min="0"
-                value={cooldownMinutes}
-                onChange={(event) => setCooldownMinutes(event.target.value)}
-                className="rounded-sm border border-border bg-transparent px-3 py-2 text-sm text-foreground"
-              />
-            </label>
+            <RepeatPolicyFields
+              mode={repeatMode}
+              cooldownMinutes={cooldownMinutes}
+              snoozeMinutes={snoozeMinutes}
+              onModeChange={setRepeatMode}
+              onCooldownMinutesChange={setCooldownMinutes}
+              onSnoozeMinutesChange={setSnoozeMinutes}
+            />
 
             <label className="flex flex-col gap-2 text-sm text-secondary sm:col-span-2">
               Signal name

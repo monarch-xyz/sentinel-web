@@ -15,7 +15,7 @@ import {
 import { cn } from '@/lib/utils';
 import { FamilyExamplesAccordion } from './FamilyExamplesAccordion';
 
-type SectionId = 'contents' | 'sources' | 'logic' | 'auth' | 'delivery' | 'routes';
+type SectionId = 'contents' | 'sources' | 'logic' | 'auth' | 'delivery' | 'history' | 'routes';
 
 interface SourceLink {
   label: string;
@@ -28,7 +28,7 @@ const sections = [
     id: 'contents',
     label: 'Contents',
     description:
-      'A signal request is an HTTP wrapper around one `definition` object. Keep delivery, cooldown, and metadata outside the DSL itself, and author conditions through state, indexed, or raw references.',
+      'A signal request is an HTTP wrapper around one `definition` object. Keep delivery, repeat policy, cooldown, and metadata outside the DSL itself, and author conditions through state, indexed, or raw references.',
   },
   {
     id: 'sources',
@@ -52,13 +52,19 @@ const sections = [
     id: 'delivery',
     label: 'Delivery',
     description:
-      'Managed Telegram is the default first-party path. `webhook_url` is only for explicit destination override.',
+      'Managed Telegram is the default first-party path. `webhook_url` is only for explicit destination override, and Telegram inline actions stay backend-managed.',
+  },
+  {
+    id: 'history',
+    label: 'History',
+    description:
+      'History responses now expose normalized condition explanations directly on evaluations and notifications, so clients do not need to dig through opaque metadata blobs.',
   },
   {
     id: 'routes',
     label: 'Routes',
     description:
-      'Health, chains, catalog, CRUD, history, and simulation make up the operational API surface customers use day to day.',
+      'Health, chains, catalog, CRUD, history, and simulation make up the operational API surface customers use day to day, including repeat-policy aware signal writes.',
   },
 ] as const satisfies ReadonlyArray<{
   id: SectionId;
@@ -74,7 +80,8 @@ const signalFields = [
   ['definition.conditions[]', 'The actual checks Sentinel evaluates across state, indexed, and raw families.'],
   ['condition.metric | condition.state_ref', 'State conditions can use metric sugar or the raw public `state_ref` surface.'],
   ['delivery | webhook_url', 'Managed delivery or explicit override.'],
-  ['cooldown_minutes', 'Minimum gap between repeat notifications.'],
+  ['repeat_policy', 'Optional repeat behavior: `cooldown`, `post_first_alert_snooze`, or `until_resolved`.'],
+  ['cooldown_minutes', 'Legacy repeat gap, still used when `repeat_policy.mode` is `cooldown`.'],
 ] as const;
 
 const sourceFamilies = [
@@ -124,7 +131,17 @@ const authRows = [
 
 const deliveryRows = [
   ['Managed Telegram', 'Send `delivery: { provider: "telegram" }` and let Sentinel resolve the target server-side.'],
+  ['Telegram actions', 'Inline `Why`, `Snooze 1h`, and `Snooze 1d` actions are managed by Sentinel backend services, not browser callbacks.'],
   ['Custom webhook', 'Send `webhook_url` only when you intentionally want your own endpoint.'],
+  ['Repeat policy', 'Set `repeat_policy` on create or update to choose cooldown, incident snooze, or until-resolved behavior.'],
+] as const;
+
+const historyRows = [
+  ['`evaluations[*].condition_results`', 'Normalized per-condition evaluation output with summaries and optional operands/window fields.'],
+  ['`evaluations[*].conditions_met`', 'Normalized matched-condition list ready for UI rendering.'],
+  ['`evaluations[*].logic`', 'Normalized top-level `AND` / `OR` evaluation logic.'],
+  ['`evaluations[*].scope`', 'Normalized scope object for the evaluation run.'],
+  ['`notifications[*].conditions_met`', 'Normalized matched-condition list recovered from stored notification payloads.'],
 ] as const;
 
 const routes = [
@@ -133,8 +150,8 @@ const routes = [
   ['GET', '/ready', 'Readiness across DB, Redis, RPC, and configured providers.'],
   ['GET', '/api/v1/catalog', 'Backend-supported raw-event template catalog for builder UX.'],
   ['POST', '/api/v1/signals', 'Create one stored signal.'],
-  ['PATCH', '/api/v1/signals/:id', 'Update definition, delivery, cooldown, or metadata.'],
-  ['GET', '/api/v1/signals/:id/history', 'Read evaluations and notification attempts.'],
+  ['PATCH', '/api/v1/signals/:id', 'Update definition, delivery, repeat policy, cooldown, or metadata.'],
+  ['GET', '/api/v1/signals/:id/history', 'Read evaluations and notification attempts, including normalized explanation fields.'],
   ['POST', '/api/v1/simulate/:id/simulate', 'Replay a signal across a time range.'],
   ['POST', '/api/v1/simulate/:id/first-trigger', 'Find the earliest trigger in a time range.'],
 ] as const;
@@ -176,7 +193,8 @@ const familyExamples = [
     ]
   },
   "delivery": { "provider": "telegram" },
-  "cooldown_minutes": 30
+  "cooldown_minutes": 30,
+  "repeat_policy": { "mode": "cooldown" }
 }`,
     language: 'json',
     filename: 'state-ref.json',
@@ -206,7 +224,8 @@ const familyExamples = [
     ]
   },
   "delivery": { "provider": "telegram" },
-  "cooldown_minutes": 5
+  "cooldown_minutes": 5,
+  "repeat_policy": { "mode": "until_resolved" }
 }`,
     language: 'json',
     filename: 'state-metric.json',
@@ -236,7 +255,8 @@ const familyExamples = [
     ]
   },
   "webhook_url": "https://your-webhook.example/alert",
-  "cooldown_minutes": 15
+  "cooldown_minutes": 15,
+  "repeat_policy": { "mode": "cooldown" }
 }`,
     language: 'json',
     filename: 'indexed.json',
@@ -276,7 +296,8 @@ const familyExamples = [
     ]
   },
   "webhook_url": "https://your-webhook.example/raw-events",
-  "cooldown_minutes": 10
+  "cooldown_minutes": 10,
+  "repeat_policy": { "mode": "cooldown" }
 }`,
     language: 'json',
     filename: 'raw-transfer.json',
@@ -317,7 +338,8 @@ const familyExamples = [
     ]
   },
   "webhook_url": "https://your-webhook.example/swap-events",
-  "cooldown_minutes": 10
+  "cooldown_minutes": 10,
+  "repeat_policy": { "mode": "post_first_alert_snooze", "snooze_minutes": 1440 }
 }`,
     language: 'json',
     filename: 'raw-swap.json',
@@ -351,7 +373,8 @@ const familyExamples = [
     ]
   },
   "webhook_url": "https://your-webhook.example/contract-events",
-  "cooldown_minutes": 10
+  "cooldown_minutes": 10,
+  "repeat_policy": { "mode": "cooldown" }
 }`,
     language: 'json',
     filename: 'raw-contract-event.json',
@@ -390,7 +413,8 @@ X-API-Key: sentinel_...
     ]
   },
   "delivery": { "provider": "telegram" },
-  "cooldown_minutes": 5
+  "cooldown_minutes": 5,
+  "repeat_policy": { "mode": "post_first_alert_snooze", "snooze_minutes": 1440 }
 }`;
 
 const logicExample = `{
@@ -466,6 +490,58 @@ const deliveryExample = `{
     "market_id": "0x...",
     "chain_id": 1
   }
+}`;
+
+const historyExample = `{
+  "signal_id": "550e8400-e29b-41d4-a716-446655440000",
+  "evaluations": [
+    {
+      "id": "eval_123",
+      "evaluated_at": "2026-02-02T15:30:00Z",
+      "triggered": true,
+      "logic": "AND",
+      "scope": {
+        "chains": [1],
+        "markets": ["0x..."],
+        "addresses": ["0x..."]
+      },
+      "condition_results": [
+        {
+          "conditionIndex": 0,
+          "conditionType": "simple",
+          "triggered": true,
+          "summary": "100 > 50",
+          "window": "1h",
+          "operator": "gt",
+          "leftValue": 100,
+          "rightValue": 50
+        }
+      ],
+      "conditions_met": [
+        {
+          "conditionIndex": 0,
+          "conditionType": "simple",
+          "triggered": true,
+          "summary": "100 > 50"
+        }
+      ]
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notif_123",
+      "triggered_at": "2026-02-02T15:30:01Z",
+      "conditions_met": [
+        {
+          "conditionIndex": 0,
+          "conditionType": "group",
+          "triggered": true,
+          "summary": "3 of 5 addresses matched (required 3)",
+          "matchedAddresses": ["0x1", "0x2", "0x3"]
+        }
+      ]
+    }
+  ]
 }`;
 
 const routesExample = `POST /api/v1/simulate/:id/simulate
@@ -716,7 +792,9 @@ export function DocsExplorer() {
             <RowList rows={deliveryRows} />
             <p className="mt-6 text-sm leading-relaxed text-secondary">
               For direct Telegram delivery, `context.app_user_id` in the outbound payload should
-              match the Telegram link mapping used by the delivery service.
+              match the Telegram link mapping used by the delivery service. Telegram inline `Why`
+              and snooze actions are already owned by the backend delivery path, so the frontend
+              only configures repeat policy at signal create or update time.
             </p>
             <SourceLinks
               links={[
@@ -735,6 +813,27 @@ export function DocsExplorer() {
             <ExampleBlock title="Outbound webhook payload" code={deliveryExample} language="json" filename="webhook-payload.json" />
           </>
         );
+      case 'history':
+        return (
+          <>
+            <RowList rows={historyRows} />
+            <p className="mt-6 text-sm leading-relaxed text-secondary">
+              Normalized explanation fields are duplicated out of historical metadata so UI clients
+              can render evaluation and notification reasoning without parsing backend-specific blobs.
+              Existing `metadata` and stored notification `payload` values still exist for backward compatibility.
+            </p>
+            <SourceLinks
+              links={[
+                {
+                  label: 'API.md',
+                  href: SENTINEL_API_DOCS_URL,
+                  note: 'History response shape and normalized explanation field additions.',
+                },
+              ]}
+            />
+            <ExampleBlock title="History response" code={historyExample} language="json" filename="history.json" />
+          </>
+        );
       case 'routes':
         return (
           <>
@@ -742,8 +841,8 @@ export function DocsExplorer() {
             <p className="mt-6 text-sm leading-relaxed text-secondary">
               `GET /health` is liveness. `GET /ready` checks live dependencies. `GET /api/v1/catalog`
               exposes the backend raw-event template catalog. Raw state and metric sugar are authored
-              directly in the DSL. Simulation returns `409 Conflict` when the stored signal depends on
-              a disabled source family.
+              directly in the DSL. Signal history returns normalized explanation fields. Simulation
+              returns `409 Conflict` when the stored signal depends on a disabled source family.
             </p>
             <SourceLinks
               links={[
@@ -770,7 +869,7 @@ export function DocsExplorer() {
       <header className="max-w-3xl">
         <h1 className="text-4xl tracking-tight text-foreground sm:text-5xl">Sentinel Docs</h1>
         <p className="mt-4 text-base leading-relaxed text-secondary sm:text-lg">
-          Reference for `state_ref`, metric sugar, indexed metrics, raw events, auth, delivery, and routes.
+          Reference for `state_ref`, metric sugar, indexed metrics, raw events, repeat policy, history, auth, delivery, and routes.
         </p>
       </header>
 

@@ -37,7 +37,8 @@ X-API-Key: YOUR_API_KEY
     }]
   },
   "webhook_url": "YOUR_WEBHOOK_URL",
-  "cooldown_minutes": 5
+  "cooldown_minutes": 5,
+  "repeat_policy": { "mode": "cooldown" }
 }`;
 
 const step2Code = `curl -X POST https://your-sentinel-host/api/v1/signals \\
@@ -64,17 +65,31 @@ const step2Code = `curl -X POST https://your-sentinel-host/api/v1/signals \\
       }]
     },
     "webhook_url": "https://your-agent.com/webhook",
-    "cooldown_minutes": 10
+    "cooldown_minutes": 10,
+    "repeat_policy": { "mode": "post_first_alert_snooze", "snooze_minutes": 1440 }
   }'`;
 
 const step3Code = `# When Sentinel triggers, you receive:
 {
   "signal_id": "sig_abc123",
-  "triggered": true,
-  "result": {
-    "condition_met": true,
-    "current_value": 850000,
-    "threshold": 1000000
+  "signal_name": "Swap Volume Burst",
+  "triggered_at": "2026-02-02T15:30:00Z",
+  "scope": {
+    "chains": [1],
+    "addresses": ["0xReceiver"]
+  },
+  "conditions_met": [
+    {
+      "conditionIndex": 0,
+      "conditionType": "simple",
+      "triggered": true,
+      "summary": "500000 > 100000"
+    }
+  ],
+  "context": {
+    "app_user_id": "user_123",
+    "address": "0xReceiver",
+    "chain_id": 1
   }
 }
 
