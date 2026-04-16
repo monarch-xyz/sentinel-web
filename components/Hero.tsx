@@ -39,7 +39,7 @@ export function Hero() {
               transition={{ duration: 0.5 }}
               className="mb-6"
             >
-              <SectionTag>Sensing Layer</SectionTag>
+              <SectionTag>Continuous Detection</SectionTag>
             </motion.div>
 
             {/* Opening line */}
@@ -49,7 +49,7 @@ export function Hero() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="font-serif text-lg text-secondary mb-4 italic"
             >
-              Hear the chain move before it gets loud.
+              State, indexed, and raw conditions in one watch loop.
             </motion.p>
 
             {/* Main headline */}
@@ -59,9 +59,9 @@ export function Hero() {
               transition={{ duration: 0.5, delay: 0.15 }}
               className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-8"
             >
-              Detect subtle
+              Watch for the
               <br />
-              <span className="text-[#ff6b35]">onchain movement</span>.
+              <span className="text-[#ff6b35]">exact move that matters</span>.
             </motion.h1>
 
             {/* Subtext */}
@@ -71,8 +71,8 @@ export function Hero() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-lg sm:text-xl text-secondary max-w-xl mb-10 leading-relaxed"
             >
-              Megabat is the sensing layer for DeFi agents. It keeps watch across RPC state, indexed history,
-              and raw events, then emits the exact structured signal worth acting on.
+              Megabat continuously watches RPC state, indexed history, and raw events, then emits a structured
+              signal only when your pattern matches.
             </motion.p>
 
             {/* CTAs */}

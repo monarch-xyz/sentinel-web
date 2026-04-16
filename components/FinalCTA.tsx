@@ -28,10 +28,10 @@ export function FinalCTA() {
             className="max-w-xl mx-auto text-center"
           >
             <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl mb-4">
-              Let Megabat keep <span className="text-[#ff6b35]">watch</span>.
+              Build from a cleaner <span className="text-[#ff6b35]">signal layer</span>.
             </h2>
             <p className="text-secondary mb-8">
-              Define the pattern once, then let agents and operators react only when Megabat detects something worth attention.
+              Define the condition once, then let agents and operators react only when Megabat emits a real signal.
             </p>
 
             {/* CTAs */}
