@@ -8,21 +8,21 @@ import { GridDivider } from './ui/GridDivider';
 const storyBeats = [
   {
     id: 'problem',
-    tag: 'Reads In',
-    title: 'Raw reads are too literal.',
-    content: `Polling state, querying indexed history, and subscribing to raw events are all easy in isolation. The hard part is turning those separate reads into one durable signal your agent can actually trust.`,
+    tag: 'Noise Floor',
+    title: 'Most monitoring hears everything.',
+    content: `Polling state, querying indexed history, and subscribing to raw events all surface motion. The real problem is distinguishing faint but meaningful movement from background noise before it becomes obvious to everyone else.`,
     code: `rpc.read("balanceOf", owner)
 index.query("ProtocolEvent", window)
 events.on("Transfer", notify)
 
 // State, indexed, and raw reads.
-// Too much plumbing, not enough intent.`,
+// Too much motion, not enough signal.`,
   },
   {
     id: 'insight',
-    tag: 'Signal Out',
-    title: 'Use DSL to state what you mean.',
-    content: `The useful abstraction is a DSL that describes the actual state change you care about: specific scope, exact thresholds, time windows, and logic gates. That gives your agent a signal instead of a feed.`,
+    tag: 'Pattern Match',
+    title: 'Describe what should register.',
+    content: `The useful abstraction is a DSL for the exact pattern you want Megabat to notice: scope, thresholds, time windows, and logic gates. That gives your agent a detection rule instead of a noisy feed.`,
     code: `{
   "scope": {
     "chains": [1],
@@ -58,9 +58,9 @@ events.on("Transfer", notify)
   },
   {
     id: 'solution',
-    tag: 'DSL Infrastructure',
-    title: 'Write intent. Rely on the infrastructure.',
-    content: `Your agent can use DSL to describe exactly what it wants, while Megabat handles the hard part: continuous evaluation, stateful windows, logic composition, and reliable delivery. That keeps the signal definition precise without making the production path fragile.`,
+    tag: 'Continuous Watch',
+    title: 'Let Megabat keep watch.',
+    content: `Once the pattern is defined, Megabat keeps sensing across state, indexed, and raw sources, maintains windows, evaluates logic, and delivers a structured alert. Your agent gets the signal without owning the watch loop.`,
     code: `POST /api/v1/signals
 {
   "name": "3 of 5 vault owners withdrew >1e18 shares",

@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
+import { RiRadarLine } from 'react-icons/ri';
 
 interface AuthShellProps {
   title: string;
@@ -25,7 +26,7 @@ export function AuthShell({ title, description, children }: AuthShellProps) {
       <div className="page-gutter relative z-10 flex min-h-screen flex-col">
         <div className="py-10">
           <Link href="/" className="inline-flex items-center gap-2 text-secondary hover:text-foreground transition-colors no-underline">
-            <span className="text-xl">🔥</span>
+            <RiRadarLine className="h-5 w-5 text-[#ff6b35]" />
             <span className="font-zen text-lg">Megabat</span>
           </Link>
         </div>

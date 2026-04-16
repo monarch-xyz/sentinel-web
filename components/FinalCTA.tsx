@@ -28,10 +28,10 @@ export function FinalCTA() {
             className="max-w-xl mx-auto text-center"
           >
             <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl mb-4">
-              Stop drowning in <span className="text-[#ff6b35]">noise</span>.
+              Let Megabat keep <span className="text-[#ff6b35]">watch</span>.
             </h2>
             <p className="text-secondary mb-8">
-              Set up state, indexed, and raw conditions once, then let agents and operators work from the same source of truth.
+              Define the pattern once, then let agents and operators react only when Megabat detects something worth attention.
             </p>
 
             {/* CTAs */}

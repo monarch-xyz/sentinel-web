@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { RiGithubFill, RiDiscordFill, RiBookLine, RiExternalLinkLine } from 'react-icons/ri';
+import { RiGithubFill, RiDiscordFill, RiBookLine, RiExternalLinkLine, RiRadarLine } from 'react-icons/ri';
 import { MEGABAT_GITHUB_URL, MEGABAT_SITE_DOCS_PATH } from '@/lib/megabat-links';
 
 const links = [
@@ -18,10 +18,10 @@ export function Footer() {
           {/* Logo and tagline */}
           <div className="flex flex-col items-center md:items-start gap-2">
             <Link href="/" className="flex items-center gap-2 no-underline">
-              <span className="text-2xl">🔥</span>
+              <RiRadarLine className="h-6 w-6 text-[#ff6b35]" />
               <span className="font-serif text-xl font-medium text-foreground">Megabat</span>
             </Link>
-            <p className="text-secondary text-sm font-serif italic">DeFi signals that matter</p>
+            <p className="text-secondary text-sm font-serif italic">The sensing layer for DeFi agents</p>
           </div>
 
           {/* Links */}

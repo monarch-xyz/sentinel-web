@@ -39,7 +39,7 @@ export function Hero() {
               transition={{ duration: 0.5 }}
               className="mb-6"
             >
-              <SectionTag>State • Indexed • Raw</SectionTag>
+              <SectionTag>Sensing Layer</SectionTag>
             </motion.div>
 
             {/* Opening line */}
@@ -49,7 +49,7 @@ export function Hero() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="font-serif text-lg text-secondary mb-4 italic"
             >
-              Define once. Evaluate continuously.
+              Hear the chain move before it gets loud.
             </motion.p>
 
             {/* Main headline */}
@@ -59,9 +59,9 @@ export function Hero() {
               transition={{ duration: 0.5, delay: 0.15 }}
               className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-8"
             >
-              Describe exact
+              Detect subtle
               <br />
-              <span className="text-[#ff6b35]">onchain intent</span>.
+              <span className="text-[#ff6b35]">onchain movement</span>.
             </motion.h1>
 
             {/* Subtext */}
@@ -71,7 +71,8 @@ export function Hero() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-lg sm:text-xl text-secondary max-w-xl mb-10 leading-relaxed"
             >
-              Megabat is agent-first infrastructure for authoring state, indexed, and raw event conditions through a precise DSL. You describe the condition you care about, and Megabat evaluates it continuously and delivers the signal.
+              Megabat is the sensing layer for DeFi agents. It keeps watch across RPC state, indexed history,
+              and raw events, then emits the exact structured signal worth acting on.
             </motion.p>
 
             {/* CTAs */}
@@ -85,7 +86,7 @@ export function Hero() {
                 onClick={scrollToSection}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#ff6b35] text-white text-sm font-medium rounded-md hover:bg-[#ff6b35]/90 transition-colors"
               >
-                Learn More
+                See How It Works
                 <RiArrowDownLine className="w-4 h-4" />
               </button>
               <Link

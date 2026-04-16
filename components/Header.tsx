@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { RiGithubFill, RiDiscordFill, RiBookLine, RiMenuLine, RiCloseLine, RiMoonLine, RiSunLine, RiLoginCircleLine } from 'react-icons/ri';
+import { RiGithubFill, RiDiscordFill, RiBookLine, RiMenuLine, RiCloseLine, RiMoonLine, RiSunLine, RiLoginCircleLine, RiRadarLine } from 'react-icons/ri';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { MEGABAT_GITHUB_URL, MEGABAT_SITE_DOCS_PATH } from '@/lib/megabat-links';
@@ -52,7 +52,7 @@ export function Header() {
         <div className="flex items-center justify-between h-14 md:h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 no-underline">
-            <span className="text-2xl">🔥</span>
+            <RiRadarLine className="h-6 w-6 text-[#ff6b35]" />
             <span className="font-serif text-xl font-medium text-foreground">Megabat</span>
           </Link>
 

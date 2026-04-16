@@ -44,30 +44,31 @@ export function ForAgents() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <SectionTag>For Builders</SectionTag>
+              <SectionTag>Agent Senses</SectionTag>
               
               <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl mt-4 mb-4">
-                Give your agent <span className="text-[#ff6b35]">senses</span>.
+                Give your agent a <span className="text-[#ff6b35]">detection layer</span>.
               </h2>
               
               <p className="text-secondary leading-relaxed mb-6">
-                Megabat works naturally with agents because the DSL is structured enough for them to understand,
-                create, update, or cancel signals directly from human intent. Agents can mix metric sugar, raw state refs,
-                indexed metrics, and raw event scans, then route webhook payloads off the structured context Megabat returns.
+                Megabat works naturally with agents because the DSL is structured enough for them to express what
+                should register, and the runtime is durable enough to keep watch after they stop polling. Agents can
+                combine metric sugar, raw state refs, indexed metrics, and raw event scans, then route actions from
+                the structured context Megabat returns.
               </p>
 
               <ul className="space-y-3 text-secondary">
                 <li className="flex items-center gap-3">
                   <RiRobot2Line className="w-5 h-5 text-[#ff6b35]" />
-                  <span>Metric sugar plus raw state refs when agents need lower-level reads</span>
+                  <span>One detection surface across state, indexed, and raw sources</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <RiRobot2Line className="w-5 h-5 text-[#ff6b35]" />
-                  <span>Webhook delivery with structured scope and context</span>
+                  <span>Webhook payloads with exact scope, matched conditions, and context</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <RiRobot2Line className="w-5 h-5 text-[#ff6b35]" />
-                  <span>Adaptive monitoring flows for autonomous reactions</span>
+                  <span>Continuous watch without bespoke polling loops and filters</span>
                 </li>
               </ul>
             </motion.div>

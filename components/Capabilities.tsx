@@ -138,12 +138,12 @@ export function Capabilities() {
             transition={{ duration: 0.5 }}
             className="mb-12"
           >
-            <SectionTag>Practical DSL</SectionTag>
+            <SectionTag>Detection Patterns</SectionTag>
             <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl mt-4 mb-3">
-              Two concrete <span className="text-[#ff6b35]">signal definitions</span>
+              Two concrete patterns <span className="text-[#ff6b35]">Megabat can detect</span>
             </h2>
             <p className="text-secondary max-w-2xl">
-              Click a use case to inspect how a precise DSL can describe the actual state change you want Megabat to evaluate.
+              Click a use case to inspect how the DSL turns subtle but important movement into a signal Megabat can keep watching for.
             </p>
           </motion.div>
 

@@ -12,7 +12,6 @@ export default function Icon() {
     (
       <div
         style={{
-          fontSize: 28,
           background: 'linear-gradient(135deg, #ff6b35 0%, #ff9f1c 100%)',
           width: '100%',
           height: '100%',
@@ -20,9 +19,13 @@ export default function Icon() {
           alignItems: 'center',
           justifyContent: 'center',
           borderRadius: '6px',
+          color: '#16181a',
+          fontFamily: 'sans-serif',
+          fontSize: 20,
+          fontWeight: 700,
         }}
       >
-        🔥
+        M
       </div>
     ),
     {

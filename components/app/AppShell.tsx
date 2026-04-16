@@ -3,7 +3,7 @@
 import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { RiAddLine, RiBookOpenLine, RiDashboardLine, RiFlashlightLine, RiLogoutCircleRLine, RiTelegram2Line } from 'react-icons/ri';
+import { RiAddLine, RiBookOpenLine, RiDashboardLine, RiFlashlightLine, RiLogoutCircleRLine, RiRadarLine, RiTelegram2Line } from 'react-icons/ri';
 import { Button } from '@/components/ui/Button';
 import { buildLoginHref } from '@/lib/auth/redirect';
 import { buildTemplateEntryPath } from '@/lib/telegram/setup-flow';
@@ -68,7 +68,7 @@ export function AppShell({ children, telegramLinked }: AppShellProps) {
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex items-center gap-4">
                   <Link href="/app" className="flex items-center gap-2 no-underline">
-                    <span className="text-xl">🔥</span>
+                    <RiRadarLine className="h-5 w-5 text-[#ff6b35]" />
                     <span className="font-zen text-lg text-foreground">Megabat</span>
                   </Link>
                   <span className="hidden text-xs uppercase tracking-[0.3em] text-secondary sm:block">Console</span>

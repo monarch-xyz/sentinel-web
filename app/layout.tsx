@@ -52,11 +52,11 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(siteUrl),
     title: {
-      default: 'Megabat - DeFi Signals That Matter',
+      default: 'Megabat - The Sensing Layer for DeFi Agents',
       template: '%s | Megabat',
     },
     description:
-      'Monitor RPC state, indexed history, and raw events through one signal DSL. Get Telegram alerts or trigger your agent via webhook. Built by Monarch.',
+      'Megabat watches RPC state, indexed history, and raw events continuously, then emits structured signals only when the pattern you defined actually matches. Built by Monarch.',
     keywords: [
       'DeFi',
       'DeFi monitoring',
@@ -89,8 +89,8 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     openGraph: {
-      title: 'Megabat - DeFi Signals That Matter',
-      description: 'Monitor state, indexed history, and raw events through one signal DSL. Built by Monarch.',
+      title: 'Megabat - The Sensing Layer for DeFi Agents',
+      description: 'Megabat keeps watch across state, indexed history, and raw events, then emits structured signals only when the pattern matches.',
       url: siteUrl,
       siteName: 'Megabat by Monarch',
       locale: 'en_US',
@@ -100,21 +100,21 @@ export async function generateMetadata(): Promise<Metadata> {
           url: `${siteUrl}/opengraph-image`,
           width: 1200,
           height: 630,
-          alt: 'Megabat - State, Indexed, and Raw Signals for Agents',
+          alt: 'Megabat - The sensing layer for DeFi agents',
           type: 'image/png',
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Megabat - DeFi Signals That Matter',
-      description: 'Monitor state, indexed history, and raw events through one signal DSL.',
+      title: 'Megabat - The Sensing Layer for DeFi Agents',
+      description: 'Megabat keeps watch across state, indexed history, and raw events, then emits structured signals only when the pattern matches.',
       creator: '@monarchxyz',
       site: '@monarchxyz',
       images: [
         {
           url: `${siteUrl}/twitter-image`,
-          alt: 'Megabat - State, Indexed, and Raw Signals for Agents',
+          alt: 'Megabat - The sensing layer for DeFi agents',
         },
       ],
     },
@@ -135,7 +135,7 @@ export default async function RootLayout({
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
     name: 'Megabat',
-    description: 'DeFi signal monitoring across RPC state, indexed history, and raw events.',
+    description: 'A sensing layer for DeFi agents across RPC state, indexed history, and raw events.',
     url: siteUrl,
     applicationCategory: 'FinanceApplication',
     operatingSystem: 'Web',

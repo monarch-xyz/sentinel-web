@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 
-export const alt = 'Megabat - State, Indexed, and Raw Signals for Agents';
+export const alt = 'Megabat - The sensing layer for DeFi agents';
 export const size = {
   width: 1200,
   height: 630,
@@ -49,7 +49,23 @@ export default async function Image() {
               alignItems: 'center',
             }}
           >
-            <span style={{ fontSize: '56px' }}>🔥</span>
+            <div
+              style={{
+                width: '56px',
+                height: '56px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '16px',
+                backgroundColor: '#ff6b35',
+                color: '#16181a',
+                fontSize: '28px',
+                fontWeight: 700,
+                fontFamily: 'sans-serif',
+              }}
+            >
+              M
+            </div>
             <span
               style={{
                 fontSize: '56px',
@@ -74,7 +90,7 @@ export default async function Image() {
                 lineHeight: 1.2,
               }}
             >
-              Author Signal Logic
+              Detect Subtle Movement
             </div>
             <div
               style={{
@@ -87,7 +103,7 @@ export default async function Image() {
                 lineHeight: 1.2,
               }}
             >
-              Across Every Source
+              Before It Gets Loud
             </div>
           </div>
 
@@ -99,7 +115,7 @@ export default async function Image() {
               fontFamily: 'sans-serif',
             }}
           >
-            State, Indexed, and Raw Signals • Built by Monarch
+            State, indexed, and raw signals for DeFi agents • Built by Monarch
           </div>
         </div>
 
