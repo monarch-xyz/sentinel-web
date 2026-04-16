@@ -26,7 +26,7 @@
 
 ## Environment
 ```env
-NEXT_PUBLIC_TELEGRAM_BOT_HANDLE=megabat_beta_bot
+NEXT_PUBLIC_TELEGRAM_BOT_HANDLE=sentinel_beta_bot
 MEGABAT_API_BASE_URL=http://localhost:3000/api/v1
 DELIVERY_BASE_URL=http://localhost:3100
 ```

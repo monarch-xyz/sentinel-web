@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { cookies } from 'next/headers';
-import { SESSION_COOKIE } from '@/lib/auth/constants';
+import { getSessionCookie } from '@/lib/auth/constants';
 import type { MegabatAuthenticatedUser } from '@/lib/auth/types';
 import { fetchMegabat } from '@/lib/megabat/server';
 
@@ -21,8 +21,8 @@ export const getWalletAddressFromUser = (user: MegabatAuthenticatedUser): string
 
 export const getAuthenticatedUser = async (): Promise<MegabatAuthenticatedUser | null> => {
   const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE)?.value;
-  if (!token) {
+  const sessionCookie = getSessionCookie(cookieStore);
+  if (!sessionCookie?.value) {
     return null;
   }
 

@@ -2,11 +2,29 @@ import 'server-only';
 
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { SESSION_COOKIE } from '@/lib/auth/constants';
+import { getSessionCookie } from '@/lib/auth/constants';
 
 const MEGABAT_BASE_URL_FALLBACK = 'http://localhost:3000/api/v1';
 
 const trimTrailingSlash = (value: string) => value.replace(/\/+$/, '');
+
+const getConfiguredMegabatApiBaseUrl = () => {
+  if (process.env.MEGABAT_API_BASE_URL) {
+    return process.env.MEGABAT_API_BASE_URL;
+  }
+
+  const fallbackEntry = Object.entries(process.env).find(
+    ([key, value]) =>
+      key.endsWith('_API_BASE_URL') &&
+      key !== 'DELIVERY_BASE_URL' &&
+      key !== 'MEGABAT_API_BASE_URL' &&
+      !key.startsWith('NEXT_PUBLIC_') &&
+      typeof value === 'string' &&
+      value.length > 0
+  );
+
+  return fallbackEntry?.[1];
+};
 
 const normalizeMegabatBaseUrl = (value: string) => {
   const withScheme = /^[a-z][a-z\d+\-.]*:\/\//i.test(value) ? value : `http://${value}`;
@@ -21,7 +39,7 @@ const normalizeMegabatBaseUrl = (value: string) => {
 
 export const getMegabatApiBaseUrl = () =>
   normalizeMegabatBaseUrl(
-    process.env.MEGABAT_API_BASE_URL ?? MEGABAT_BASE_URL_FALLBACK
+    getConfiguredMegabatApiBaseUrl() ?? MEGABAT_BASE_URL_FALLBACK
   );
 
 export const buildMegabatApiUrl = (path: string, search: string = '') => {
@@ -31,12 +49,12 @@ export const buildMegabatApiUrl = (path: string, search: string = '') => {
 
 const getMegabatSessionCookieHeader = async () => {
   const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE)?.value;
-  if (!token) {
+  const sessionCookie = getSessionCookie(cookieStore);
+  if (!sessionCookie?.value) {
     return null;
   }
 
-  return `${SESSION_COOKIE}=${token}`;
+  return `${sessionCookie.name}=${sessionCookie.value}`;
 };
 
 const buildMegabatAuthHeaders = async (headersInit?: HeadersInit) => {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { SESSION_COOKIE } from '@/lib/auth/constants';
+import { getSessionCookie } from '@/lib/auth/constants';
 import { buildLoginHref } from '@/lib/auth/redirect';
 import { buildRequestUrl } from '@/lib/http/origin';
 import { fetchMegabat } from '@/lib/megabat/server';
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  if (!request.cookies.get(SESSION_COOKIE)?.value) {
+  if (!getSessionCookie(request.cookies)?.value) {
     return redirectTo(request, buildLoginPath(request));
   }
 
