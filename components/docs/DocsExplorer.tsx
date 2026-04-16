@@ -2,26 +2,14 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { RiExternalLinkLine } from 'react-icons/ri';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import {
-  MEGABAT_API_DOCS_URL,
-  MEGABAT_ARCHITECTURE_DOCS_URL,
-  MEGABAT_AUTH_DOCS_URL,
-  MEGABAT_DSL_DOCS_URL,
   MEGABAT_GITHUB_URL,
-  MEGABAT_SOURCES_DOCS_URL,
 } from '@/lib/megabat-links';
 import { cn } from '@/lib/utils';
 import { FamilyExamplesAccordion } from './FamilyExamplesAccordion';
 
 type SectionId = 'contents' | 'sources' | 'logic' | 'auth' | 'delivery' | 'history' | 'routes';
-
-interface SourceLink {
-  label: string;
-  href: string;
-  note: string;
-}
 
 const sections = [
   {
@@ -559,31 +547,6 @@ function SubsectionTitle({ children }: { children: string }) {
   return <h3 className="text-lg tracking-tight text-foreground">{children}</h3>;
 }
 
-function SourceLinks({ links }: { links: SourceLink[] }) {
-  return (
-    <div className="border-t border-border pt-6">
-      <SubsectionTitle>Source of truth</SubsectionTitle>
-      <div className="mt-4 divide-y divide-border border-b border-border">
-        {links.map((link) => (
-          <a
-            key={link.href}
-            href={link.href}
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-start justify-between gap-4 py-3 text-foreground no-underline transition-colors hover:text-foreground"
-          >
-            <div>
-              <p className="text-sm">{link.label}</p>
-              <p className="mt-1 text-sm text-secondary">{link.note}</p>
-            </div>
-            <RiExternalLinkLine className="mt-0.5 h-4 w-4 shrink-0 text-secondary" />
-          </a>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function ExampleBlock({
   title,
   code,
@@ -647,20 +610,6 @@ export function DocsExplorer() {
         return (
           <>
             <RowList rows={signalFields} />
-            <SourceLinks
-              links={[
-                {
-                  label: 'API.md',
-                  href: MEGABAT_API_DOCS_URL,
-                  note: 'Request wrapper for `POST /api/v1/signals` and protected route behavior.',
-                },
-                {
-                  label: 'DSL.md',
-                  href: MEGABAT_DSL_DOCS_URL,
-                  note: 'Canonical `definition` shape, condition types, and examples.',
-                },
-              ]}
-            />
             <ExampleBlock title="Example request" code={contentsExample} language="shell" filename="create-signal.http" />
           </>
         );
@@ -713,21 +662,6 @@ export function DocsExplorer() {
               <SubsectionTitle>Examples</SubsectionTitle>
               <FamilyExamplesAccordion items={[...familyExamples]} defaultOpenId="state-ref" />
             </div>
-
-            <SourceLinks
-              links={[
-                {
-                  label: 'SOURCES.md',
-                  href: MEGABAT_SOURCES_DOCS_URL,
-                  note: 'Canonical source-family contract and capability gating.',
-                },
-                {
-                  label: 'DSL.md',
-                  href: MEGABAT_DSL_DOCS_URL,
-                  note: 'Which condition types belong to raw state, metric sugar, indexed, and raw events.',
-                },
-              ]}
-            />
           </>
         );
       case 'logic':
@@ -739,25 +673,6 @@ export function DocsExplorer() {
               `add` or `sub` expressions in the public DSL today. The public surface stays declarative:
               metric sugar, raw state refs, indexed metrics, and raw event scans.
             </p>
-            <SourceLinks
-              links={[
-                {
-                  label: 'DSL.md',
-                  href: MEGABAT_DSL_DOCS_URL,
-                  note: 'Public `logic`, `group`, and condition-type contract.',
-                },
-                {
-                  label: 'SOURCES.md',
-                  href: MEGABAT_SOURCES_DOCS_URL,
-                  note: 'Mixed-source planning belongs in the engine and metric registry.',
-                },
-                {
-                  label: 'ARCHITECTURE.md',
-                  href: MEGABAT_ARCHITECTURE_DOCS_URL,
-                  note: 'Compiler, planner, and evaluator boundaries.',
-                },
-              ]}
-            />
             <ExampleBlock title="Example definition" code={logicExample} language="json" filename="logic.json" />
           </>
         );
@@ -769,20 +684,6 @@ export function DocsExplorer() {
               Public routes are `GET /health`, `GET /chains`, `GET /ready`, `POST /api/v1/auth/register`,
               `POST /api/v1/auth/siwe/nonce`, and `POST /api/v1/auth/siwe/verify`.
             </p>
-            <SourceLinks
-              links={[
-                {
-                  label: 'AUTH.md',
-                  href: MEGABAT_AUTH_DOCS_URL,
-                  note: 'API key lifecycle, SIWE session flow, and protected route rules.',
-                },
-                {
-                  label: 'API.md',
-                  href: MEGABAT_API_DOCS_URL,
-                  note: 'Register, SIWE nonce, and SIWE verify endpoints.',
-                },
-              ]}
-            />
             <ExampleBlock title="Register for API-key access" code={authExample} language="shell" filename="auth.http" />
           </>
         );
@@ -796,20 +697,6 @@ export function DocsExplorer() {
               and snooze actions are already owned by the backend delivery path, so the frontend
               only configures repeat policy at signal create or update time.
             </p>
-            <SourceLinks
-              links={[
-                {
-                  label: 'API.md',
-                  href: MEGABAT_API_DOCS_URL,
-                  note: 'Signal delivery contract and outbound webhook payload shape.',
-                },
-                {
-                  label: 'GitHub',
-                  href: MEGABAT_GITHUB_URL,
-                  note: 'Repository source of truth for implementation details.',
-                },
-              ]}
-            />
             <ExampleBlock title="Outbound webhook payload" code={deliveryExample} language="json" filename="webhook-payload.json" />
           </>
         );
@@ -822,15 +709,6 @@ export function DocsExplorer() {
               can render evaluation and notification reasoning without parsing backend-specific blobs.
               Existing `metadata` and stored notification `payload` values still exist for backward compatibility.
             </p>
-            <SourceLinks
-              links={[
-                {
-                  label: 'API.md',
-                  href: MEGABAT_API_DOCS_URL,
-                  note: 'History response shape and normalized explanation field additions.',
-                },
-              ]}
-            />
             <ExampleBlock title="History response" code={historyExample} language="json" filename="history.json" />
           </>
         );
@@ -844,20 +722,6 @@ export function DocsExplorer() {
               directly in the DSL. Signal history returns normalized explanation fields. Simulation
               returns `409 Conflict` when the stored signal depends on a disabled source family.
             </p>
-            <SourceLinks
-              links={[
-                {
-                  label: 'API.md',
-                  href: MEGABAT_API_DOCS_URL,
-                  note: 'Health, chains, catalog, signal CRUD, history, and simulation endpoints.',
-                },
-                {
-                  label: 'SOURCES.md',
-                  href: MEGABAT_SOURCES_DOCS_URL,
-                  note: 'Capability gating behavior for disabled families.',
-                },
-              ]}
-            />
             <ExampleBlock title="Simulation request" code={routesExample} language="shell" filename="simulate.http" />
           </>
         );
