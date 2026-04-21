@@ -13,10 +13,10 @@ export function AuthShell({ title, description, children }: AuthShellProps) {
       <div className="page-gutter relative z-10 flex min-h-screen flex-col">
         <div className="flex items-center justify-between">
           <Link href="/" className="ui-link inline-flex items-center gap-3 no-underline">
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-[0.6rem] border border-border bg-[color:var(--surface-panel)]">
-              <span className="h-2 w-2 rounded-full bg-[color:var(--signal-copper)]" />
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-[0.35rem] border border-border bg-[color:var(--surface-panel)]">
+              <span className="h-px w-5 -rotate-[28deg] bg-[color:var(--signal-copper)]" />
             </span>
-            <span className="font-display text-[1.35rem] text-foreground">Iruka</span>
+            <span className="font-display text-[1.22rem] text-foreground">Iruka</span>
           </Link>
           <span className="ui-chip" data-tone="accent">
             Access

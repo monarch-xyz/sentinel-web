@@ -13,8 +13,8 @@
   --color-card-foreground: var(--ink-primary);
   --color-primary: var(--signal-copper);
   --color-primary-foreground: var(--surface-canvas-deep);
-  --color-secondary: var(--surface-muted);
-  --color-secondary-foreground: var(--ink-primary);
+  --color-secondary: var(--ink-secondary);
+  --color-secondary-foreground: var(--surface-panel);
   --color-muted: var(--surface-muted);
   --color-muted-foreground: var(--ink-muted);
   --color-accent: var(--surface-panel-strong);
@@ -22,36 +22,37 @@
   --color-destructive: var(--signal-alert);
   --color-destructive-foreground: var(--ink-primary);
 
-  --radius-sm: 0.35rem;
-  --radius-md: 0.55rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.38rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.62rem;
 }
 
 :root {
-  --surface-canvas-deep: oklch(0.92 0.012 72);
-  --surface-canvas: oklch(0.965 0.01 72);
-  --surface-panel: oklch(0.99 0.006 72);
-  --surface-panel-strong: oklch(0.955 0.014 68);
-  --surface-muted: oklch(0.945 0.01 69);
-  --surface-inset: oklch(0.935 0.01 69);
-  --surface-hover: oklch(0.905 0.016 66);
-  --ink-primary: oklch(0.38 0.026 58);
-  --ink-secondary: oklch(0.42 0.019 60);
-  --ink-muted: oklch(0.53 0.012 62);
-  --stroke-soft: oklch(0.86 0.014 68);
-  --stroke-strong: oklch(0.76 0.022 62);
-  --signal-copper: oklch(0.57 0.055 58);
-  --signal-ember: oklch(0.64 0.05 72);
-  --signal-alert: oklch(0.57 0.115 34);
-  --signal-success: oklch(0.57 0.09 154);
-  --signal-telegram: oklch(0.6 0.08 244);
-  --shadow-panel: 0 16px 32px -22px rgba(57, 42, 28, 0.16);
-  --grid-dot-color: color-mix(in oklch, var(--stroke-strong) 18%, transparent);
-  --grid-line-color: color-mix(in oklch, var(--stroke-soft) 58%, transparent);
-  --grid-cell-active: color-mix(in oklch, var(--signal-copper) 25%, transparent);
-  --grid-cell-muted: color-mix(in oklch, var(--stroke-soft) 26%, transparent);
-  --radius: 0.75rem;
+  --surface-canvas-deep: oklch(0.945 0.006 104);
+  --surface-canvas: oklch(0.982 0.004 104);
+  --surface-panel: oklch(0.996 0.002 104);
+  --surface-panel-strong: oklch(0.968 0.004 230);
+  --surface-muted: oklch(0.956 0.004 230);
+  --surface-inset: oklch(0.942 0.004 230);
+  --surface-hover: oklch(0.924 0.006 230);
+  --ink-primary: oklch(0.28 0.022 252);
+  --ink-secondary: oklch(0.39 0.018 242);
+  --ink-muted: oklch(0.55 0.012 235);
+  --stroke-soft: oklch(0.865 0.01 225);
+  --stroke-strong: oklch(0.72 0.018 225);
+  --signal-copper: oklch(0.43 0.052 252);
+  --signal-ember: oklch(0.57 0.105 34);
+  --signal-alert: oklch(0.55 0.12 28);
+  --signal-success: oklch(0.5 0.08 154);
+  --signal-telegram: oklch(0.53 0.075 222);
+  --paper-thread: color-mix(in oklch, var(--stroke-soft) 30%, transparent);
+  --shadow-panel: 0 1px 0 rgba(31, 45, 68, 0.03);
+  --grid-dot-color: color-mix(in oklch, var(--stroke-strong) 10%, transparent);
+  --grid-line-color: color-mix(in oklch, var(--stroke-soft) 32%, transparent);
+  --grid-cell-active: color-mix(in oklch, var(--signal-copper) 14%, transparent);
+  --grid-cell-muted: color-mix(in oklch, var(--stroke-soft) 18%, transparent);
+  --radius: 0.5rem;
 
   color-scheme: light;
 }
@@ -87,12 +88,12 @@
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.18;
+    opacity: 0.04;
     background-image:
-      linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
-    background-size: 28px 28px;
-    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.35), transparent 88%);
+      repeating-linear-gradient(90deg, transparent 0 31px, var(--paper-thread) 31px 32px),
+      repeating-linear-gradient(0deg, transparent 0 31px, var(--paper-thread) 31px 32px);
+    background-size: 64px 64px;
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.32), transparent 82%);
   }
 
   body::after {
@@ -117,7 +118,7 @@
 
   ::selection {
     color: var(--ink-primary);
-    background: color-mix(in oklch, var(--signal-copper) 35%, transparent);
+    background: color-mix(in oklch, var(--signal-ember) 22%, transparent);
   }
 }
 
@@ -165,8 +166,8 @@
   .font-zen,
   .font-serif,
   .font-display {
-    font-family: var(--font-display), sans-serif;
-    letter-spacing: -0.03em;
+    font-family: var(--font-body), sans-serif;
+    letter-spacing: 0;
   }
 
   .ui-panel,
@@ -176,7 +177,7 @@
     position: relative;
     overflow: hidden;
     border: 1px solid var(--stroke-soft);
-    border-radius: 0.75rem;
+    border-radius: 0.5rem;
     box-shadow: var(--shadow-panel);
   }
 
@@ -191,16 +192,16 @@
 
   .ui-panel-muted {
     background: var(--surface-muted);
-    box-shadow: inset 0 1px 0 color-mix(in oklch, white 45%, transparent);
+    box-shadow: inset 0 1px 0 color-mix(in oklch, white 42%, transparent);
   }
 
   .ui-panel-ghost {
-    background: color-mix(in oklch, var(--surface-muted) 92%, white);
+    background: var(--surface-panel);
     box-shadow: none;
   }
 
   .ui-panel-ghost .text-secondary {
-    color: color-mix(in oklch, var(--ink-primary) 84%, var(--ink-secondary));
+    color: color-mix(in oklch, var(--ink-primary) 92%, var(--ink-secondary));
   }
 
   .ui-panel .text-secondary,
@@ -209,7 +210,9 @@
   }
 
   .ui-hero {
-    background: color-mix(in oklch, var(--surface-panel-strong) 68%, white);
+    border-color: color-mix(in oklch, var(--stroke-soft) 82%, transparent);
+    background: color-mix(in oklch, var(--surface-panel) 92%, transparent);
+    box-shadow: none;
   }
 
   .ui-hero::after {
@@ -222,7 +225,7 @@
     gap: 0.75rem;
     font-size: 0.69rem;
     line-height: 1;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--ink-muted);
   }
@@ -230,39 +233,42 @@
   .ui-kicker::before {
     content: "";
     display: block;
-    width: 1.5rem;
+    width: 1rem;
     height: 1px;
-    background: color-mix(in oklch, var(--signal-copper) 70%, transparent);
+    background: color-mix(in oklch, var(--signal-ember) 58%, transparent);
   }
 
   .ui-display {
-    font-family: var(--font-display), sans-serif;
-    font-size: clamp(2.6rem, 7vw, 5.8rem);
-    line-height: 0.95;
-    letter-spacing: -0.05em;
+    font-family: var(--font-body), sans-serif;
+    font-size: 3.75rem;
+    line-height: 1.04;
+    font-weight: 400;
+    letter-spacing: 0;
     text-wrap: balance;
   }
 
   .ui-section-title {
-    font-family: var(--font-display), sans-serif;
-    font-size: clamp(1.75rem, 3.6vw, 3.15rem);
-    line-height: 1;
-    letter-spacing: -0.035em;
+    font-family: var(--font-body), sans-serif;
+    font-size: 2.2rem;
+    line-height: 1.12;
+    font-weight: 400;
+    letter-spacing: 0;
     text-wrap: balance;
   }
 
   .ui-page-title {
-    font-family: var(--font-display), sans-serif;
-    font-size: clamp(1.9rem, 3.8vw, 2.85rem);
-    line-height: 1;
-    letter-spacing: -0.035em;
+    font-family: var(--font-body), sans-serif;
+    font-size: 2.15rem;
+    line-height: 1.12;
+    font-weight: 400;
+    letter-spacing: 0;
     text-wrap: balance;
   }
 
   .ui-copy {
     max-width: 72ch;
     color: color-mix(in oklch, var(--ink-primary) 78%, var(--ink-secondary));
-    line-height: 1.68;
+    line-height: 1.62;
   }
 
   .ui-copy-strong {
@@ -274,8 +280,8 @@
     align-items: center;
     gap: 0.45rem;
     border: 1px solid var(--stroke-soft);
-    border-radius: 0.55rem;
-    background: color-mix(in oklch, var(--surface-panel) 90%, white);
+    border-radius: 0.38rem;
+    background: var(--surface-panel);
     padding: 0.5rem 0.75rem;
     font-size: 0.78rem;
     line-height: 1;
@@ -283,27 +289,27 @@
   }
 
   .ui-chip[data-tone="accent"] {
-    border-color: color-mix(in oklch, var(--signal-copper) 45%, var(--stroke-soft));
-    background: color-mix(in oklch, var(--signal-copper) 7%, var(--surface-inset));
+    border-color: color-mix(in oklch, var(--signal-copper) 32%, var(--stroke-soft));
+    background: color-mix(in oklch, var(--signal-copper) 6%, var(--surface-inset));
     color: var(--ink-primary);
   }
 
   .ui-chip[data-tone="success"] {
     border-color: color-mix(in oklch, var(--signal-success) 42%, var(--stroke-soft));
     background: color-mix(in oklch, var(--signal-success) 11%, var(--surface-inset));
-    color: color-mix(in oklch, var(--signal-success) 68%, white);
+    color: color-mix(in oklch, var(--signal-success) 64%, var(--ink-primary));
   }
 
   .ui-chip[data-tone="danger"] {
     border-color: color-mix(in oklch, var(--signal-alert) 42%, var(--stroke-soft));
     background: color-mix(in oklch, var(--signal-alert) 11%, var(--surface-inset));
-    color: color-mix(in oklch, var(--signal-alert) 76%, white);
+    color: color-mix(in oklch, var(--signal-alert) 68%, var(--ink-primary));
   }
 
   .ui-chip[data-tone="telegram"] {
     border-color: color-mix(in oklch, var(--signal-telegram) 38%, var(--stroke-soft));
     background: color-mix(in oklch, var(--signal-telegram) 11%, var(--surface-inset));
-    color: color-mix(in oklch, var(--signal-telegram) 74%, white);
+    color: color-mix(in oklch, var(--signal-telegram) 68%, var(--ink-primary));
   }
 
   .ui-button {
@@ -312,7 +318,7 @@
     justify-content: center;
     gap: 0.55rem;
     border: 1px solid var(--stroke-soft);
-    border-radius: 0.55rem;
+    border-radius: 0.38rem;
     background: var(--surface-panel);
     color: var(--ink-primary);
     transition:
@@ -329,18 +335,18 @@
 
   .ui-button:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px color-mix(in oklch, var(--signal-copper) 16%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--signal-copper) 13%, transparent);
   }
 
   .ui-button[data-variant="primary"] {
-    border-color: color-mix(in oklch, var(--signal-copper) 38%, var(--stroke-soft));
-    background: color-mix(in oklch, var(--signal-copper) 10%, white);
-    color: var(--ink-primary);
+    border-color: color-mix(in oklch, var(--signal-copper) 56%, var(--stroke-soft));
+    background: color-mix(in oklch, var(--signal-copper) 86%, var(--ink-primary));
+    color: var(--surface-panel);
   }
 
   .ui-button[data-variant="primary"]:hover {
-    border-color: color-mix(in oklch, var(--signal-copper) 54%, var(--stroke-strong));
-    background: color-mix(in oklch, var(--signal-copper) 16%, white);
+    border-color: color-mix(in oklch, var(--signal-copper) 66%, var(--stroke-strong));
+    background: color-mix(in oklch, var(--signal-copper) 72%, var(--ink-primary));
   }
 
   .ui-button[data-variant="secondary"] {
@@ -363,14 +369,14 @@
 
   .ui-stat {
     border: 1px solid color-mix(in oklch, var(--stroke-soft) 92%, transparent);
-    border-radius: 0.6rem;
+    border-radius: 0.45rem;
     background: color-mix(in oklch, var(--surface-panel) 96%, white);
     padding: 1rem;
   }
 
   .ui-stat-label {
     font-size: 0.7rem;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--ink-muted);
   }
@@ -378,10 +384,10 @@
   .ui-stat-value {
     margin-top: 0.55rem;
     color: var(--ink-primary);
-    font-family: var(--font-display), sans-serif;
-    font-size: clamp(1.15rem, 2vw, 1.6rem);
+    font-family: var(--font-body), sans-serif;
+    font-size: 1.4rem;
     line-height: 1;
-    letter-spacing: -0.04em;
+    letter-spacing: 0;
   }
 
   .ui-field {
@@ -397,8 +403,8 @@
   .ui-textarea {
     width: 100%;
     border: 1px solid var(--stroke-soft);
-    border-radius: 0.5rem;
-    background: var(--surface-panel);
+    border-radius: 0.38rem;
+    background: color-mix(in oklch, var(--surface-panel) 88%, transparent);
     padding: 0.78rem 0.9rem;
     color: var(--ink-primary);
     box-shadow: none;
@@ -427,7 +433,7 @@
     outline: none;
     border-color: color-mix(in oklch, var(--signal-copper) 52%, var(--stroke-strong));
     box-shadow:
-      0 0 0 3px color-mix(in oklch, var(--signal-copper) 16%, transparent);
+      0 0 0 3px color-mix(in oklch, var(--signal-copper) 12%, transparent);
   }
 
   .ui-helper {
@@ -438,8 +444,8 @@
 
   .ui-option {
     border: 1px solid var(--stroke-soft);
-    border-radius: 0.6rem;
-    background: color-mix(in oklch, var(--surface-panel) 94%, white);
+    border-radius: 0.42rem;
+    background: var(--surface-panel);
     color: var(--ink-secondary);
     transition:
       border-color 140ms ease,
@@ -450,19 +456,19 @@
 
   .ui-option:hover {
     border-color: color-mix(in oklch, var(--stroke-strong) 70%, var(--stroke-soft));
-    background: color-mix(in oklch, var(--surface-hover) 52%, white);
+    background: color-mix(in oklch, var(--surface-hover) 42%, var(--surface-panel));
     color: var(--ink-primary);
   }
 
   .ui-option[data-active="true"] {
     border-color: color-mix(in oklch, var(--signal-copper) 42%, var(--stroke-strong));
-    background: color-mix(in oklch, var(--signal-copper) 7%, white);
+    background: color-mix(in oklch, var(--signal-copper) 6%, var(--surface-panel));
     color: var(--ink-primary);
   }
 
   .ui-notice {
     border: 1px solid var(--stroke-soft);
-    border-radius: 0.6rem;
+    border-radius: 0.42rem;
     background: color-mix(in oklch, var(--surface-panel) 94%, white);
     padding: 0.95rem 1rem;
     color: var(--ink-secondary);
@@ -471,13 +477,13 @@
   .ui-notice[data-tone="success"] {
     border-color: color-mix(in oklch, var(--signal-success) 42%, var(--stroke-soft));
     background: color-mix(in oklch, var(--signal-success) 10%, var(--surface-inset));
-    color: color-mix(in oklch, var(--signal-success) 68%, white);
+    color: color-mix(in oklch, var(--signal-success) 64%, var(--ink-primary));
   }
 
   .ui-notice[data-tone="danger"] {
     border-color: color-mix(in oklch, var(--signal-alert) 42%, var(--stroke-soft));
     background: color-mix(in oklch, var(--signal-alert) 10%, var(--surface-inset));
-    color: color-mix(in oklch, var(--signal-alert) 76%, white);
+    color: color-mix(in oklch, var(--signal-alert) 68%, var(--ink-primary));
   }
 
   .ui-notice[data-tone="info"] {
@@ -492,27 +498,26 @@
   }
 
   .ui-link:hover {
-    color: color-mix(in oklch, var(--signal-ember) 40%, var(--ink-primary));
+    color: color-mix(in oklch, var(--signal-copper) 52%, var(--ink-primary));
   }
 
   .ui-menu {
     border: 1px solid var(--stroke-soft);
-    border-radius: 0.6rem;
+    border-radius: 0.42rem;
     background: var(--surface-panel);
     padding: 0.35rem;
-    box-shadow: 0 16px 34px -24px rgba(57, 42, 28, 0.2);
+    box-shadow: var(--shadow-panel);
   }
 
   .bg-dot-grid {
-    background-image: radial-gradient(circle at 1px 1px, var(--grid-dot-color) 1px, transparent 0);
-    background-size: 20px 20px;
+    background-image: none;
   }
 
   .bg-line-grid {
     background-image:
       linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
       linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
-    background-size: 28px 28px;
+    background-size: 44px 44px;
   }
 
   .grid-radial-fade {
@@ -526,7 +531,7 @@
 
 @layer utilities {
   .code-glow {
-    box-shadow: 0 12px 24px -22px rgba(57, 42, 28, 0.14);
+    box-shadow: none;
   }
 
   .custom-scrollbar {
@@ -562,4 +567,36 @@ pre,
 code {
   font-family: var(--font-mono), monospace;
   font-feature-settings: "liga" 1, "calt" 1;
+}
+
+@media (max-width: 64rem) {
+  .ui-display {
+    font-size: 2.85rem;
+  }
+
+  .ui-section-title {
+    font-size: 2rem;
+  }
+
+  .ui-page-title {
+    font-size: 1.95rem;
+  }
+}
+
+@media (max-width: 40rem) {
+  .ui-display {
+    font-size: 2.15rem;
+  }
+
+  .ui-section-title {
+    font-size: 1.7rem;
+  }
+
+  .ui-page-title {
+    font-size: 1.8rem;
+  }
+
+  .ui-stat-value {
+    font-size: 1.2rem;
+  }
 }

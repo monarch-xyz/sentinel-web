@@ -88,9 +88,9 @@ export function CodeBlock({
           >
             <div className="flex items-center gap-2">
               <div className="flex gap-1.5 mr-3">
-                <div className="h-3 w-3 rounded-full bg-[color:var(--signal-alert)]/80" />
-                <div className="h-3 w-3 rounded-full bg-[color:var(--signal-ember)]/80" />
-                <div className="h-3 w-3 rounded-full bg-[color:var(--signal-success)]/80" />
+                <div className="h-2.5 w-2.5 rounded-[0.08rem] bg-[color:var(--signal-alert)]/75" />
+                <div className="h-2.5 w-2.5 rounded-[0.08rem] bg-[color:var(--signal-ember)]/75" />
+                <div className="h-2.5 w-2.5 rounded-[0.08rem] bg-[color:var(--signal-success)]/75" />
               </div>
 
               <div className="flex items-center gap-1.5">

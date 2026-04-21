@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
-import { JetBrains_Mono, Public_Sans, Rajdhani } from 'next/font/google';
+import { JetBrains_Mono, Public_Sans } from 'next/font/google';
 import './globals.css';
 import { WagmiProviders } from '@/components/auth/WagmiProviders';
 
@@ -15,13 +15,6 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-mono',
-  weight: ['400', '500', '600'],
-});
-
-const rajdhani = Rajdhani({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-display',
   weight: ['400', '500', '600'],
 });
 
@@ -149,7 +142,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="theme-color" content="#f7f1e8" />
+        <meta name="theme-color" content="#f7f6ef" />
         <meta name="color-scheme" content="light" />
         <link rel="manifest" href="/manifest.json" />
         <script
@@ -157,7 +150,7 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${publicSans.variable} ${jetbrainsMono.variable} ${rajdhani.variable} antialiased`} suppressHydrationWarning>
+      <body className={`${publicSans.variable} ${jetbrainsMono.variable} antialiased`} suppressHydrationWarning>
         <WagmiProviders>
           {children}
         </WagmiProviders>

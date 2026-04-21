@@ -4,50 +4,50 @@ const sharedStyles: PrismTheme['styles'] = [
   {
     types: ['comment', 'prolog', 'doctype', 'cdata'],
     style: {
-      color: '#8a7c73',
+      color: '#7f8792',
       fontStyle: 'italic',
     },
   },
   {
     types: ['punctuation'],
     style: {
-      color: '#9d948b',
+      color: '#8d95a0',
     },
   },
   {
     types: ['operator', 'number', 'boolean', 'constant', 'symbol'],
     style: {
-      color: '#e7b85a',
+      color: '#9f6a43',
     },
   },
   {
     types: ['property', 'attr-name'],
     style: {
-      color: '#ea7a39',
+      color: '#465a7a',
     },
   },
   {
     types: ['string', 'char', 'attr-value'],
     style: {
-      color: '#d7c6a4',
+      color: '#687a58',
     },
   },
   {
     types: ['keyword', 'atrule'],
     style: {
-      color: '#b86e47',
+      color: '#a3523d',
     },
   },
   {
     types: ['function', 'builtin', 'class-name', 'selector'],
     style: {
-      color: '#aebc91',
+      color: '#496f7b',
     },
   },
   {
     types: ['tag', 'entity', 'deleted'],
     style: {
-      color: '#d06a5b',
+      color: '#a94f43',
     },
   },
   {
@@ -66,16 +66,16 @@ const sharedStyles: PrismTheme['styles'] = [
 
 export const irukaTheme: PrismTheme = {
   plain: {
-    color: '#4c3e34',
-    backgroundColor: '#fbf7f2',
+    color: '#2d3544',
+    backgroundColor: '#f7f6ef',
   },
   styles: sharedStyles,
 };
 
 export const irukaDarkTheme: PrismTheme = {
   plain: {
-    color: '#f4eee8',
-    backgroundColor: '#130f11',
+    color: '#f2f0e8',
+    backgroundColor: '#182033',
   },
   styles: sharedStyles,
 };

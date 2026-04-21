@@ -27,38 +27,36 @@ export function Hero() {
   };
 
   return (
-    <section className="relative overflow-hidden pt-28 pb-18 md:pt-34 md:pb-24">
-      <div className="absolute inset-0 bg-dot-grid opacity-[0.1]" aria-hidden="true" />
-      <div className="absolute inset-0 grid-radial-fade bg-line-grid opacity-[0.08]" aria-hidden="true" />
+    <section className="relative overflow-hidden pt-24 pb-16 md:pt-30 md:pb-22">
 
       <div className="page-gutter relative z-10">
-        <div className="ui-hero px-6 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
-          <div className="relative z-10 grid items-end gap-10 xl:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)]">
+        <div className="px-1 py-7 sm:px-2 sm:py-10 lg:py-12">
+          <div className="relative z-10 grid items-start gap-10 xl:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)]">
             <div className="max-w-3xl">
               <motion.div
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45 }}
               >
-                <SectionTag>Continuous Detection</SectionTag>
+                <SectionTag>Iruka</SectionTag>
               </motion.div>
 
               <motion.p
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, delay: 0.08 }}
-                className="mt-6 ui-kicker"
+                className="mt-5 ui-kicker"
               >
-                Built For Operators And Agent Builders
+                For Operators And Agent Builders
               </motion.p>
 
               <motion.h1
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, delay: 0.14 }}
-                className="ui-display mt-5"
+                className="ui-display mt-4"
               >
-                Let Iruka listen through the noise until a real signal resolves.
+                Onchain conditions, kept quietly in view.
               </motion.h1>
 
               <motion.p
@@ -67,8 +65,8 @@ export function Hero() {
                 transition={{ duration: 0.45, delay: 0.2 }}
                 className="ui-copy mt-6 text-base sm:text-lg"
               >
-                Iruka watches archive RPC state, indexed history, and raw events in one loop.
-                You describe the condition that matters. Iruka keeps watch until it becomes true.
+                Iruka turns state, indexed history, and raw events into a clean operating surface.
+                Define the condition once, then let the system carry the monitoring.
               </motion.p>
 
               <motion.div
@@ -79,7 +77,7 @@ export function Hero() {
               >
                 <button onClick={scrollToSection} className="w-fit">
                   <span className="ui-button px-5 py-3.5" data-variant="primary">
-                    Watch The Flow
+                    See The Flow
                     <RiArrowDownLine className="h-4 w-4" />
                   </span>
                 </button>
@@ -100,13 +98,13 @@ export function Hero() {
             >
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="ui-kicker">Watch Loop</div>
-                  <h2 className="mt-3 font-display text-[1.8rem] leading-none text-foreground">
-                    One signal surface.
+                  <div className="ui-kicker">Condition Set</div>
+                  <h2 className="mt-3 font-display text-[1.35rem] leading-tight text-foreground">
+                    Quiet monitoring, clear handoff.
                   </h2>
                 </div>
                 <span className="ui-chip" data-tone="accent">
-                  Active
+                  Ready
                 </span>
               </div>
 
@@ -124,7 +122,7 @@ export function Hero() {
                         {signal.label}
                       </span>
                       <span className="text-[0.72rem] uppercase tracking-[0.18em] text-[color:var(--ink-muted)]">
-                        Listening
+                        Tracking
                       </span>
                     </div>
                     <p className="mt-3 text-sm leading-relaxed text-secondary">{signal.value}</p>

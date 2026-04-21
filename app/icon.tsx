@@ -12,15 +12,15 @@ export default function Icon() {
     (
       <div
         style={{
-          background: '#f6efe6',
+          background: '#f7f6ef',
           width: '100%',
           height: '100%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           borderRadius: '6px',
-          color: '#4a3c33',
-          border: '1px solid rgba(133, 104, 79, 0.26)',
+          color: '#2d3544',
+          border: '1px solid rgba(92, 105, 126, 0.24)',
           fontFamily: 'sans-serif',
           fontSize: 20,
           fontWeight: 500,
@@ -28,10 +28,9 @@ export default function Icon() {
       >
         <div
           style={{
-            width: 18,
-            height: 18,
-            borderRadius: 999,
-            border: '2px solid rgba(164, 118, 76, 0.72)',
+            width: 20,
+            height: 14,
+            position: 'relative',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -39,10 +38,20 @@ export default function Icon() {
         >
           <div
             style={{
-              width: 6,
-              height: 6,
-              borderRadius: 999,
-              backgroundColor: '#a46f47',
+              position: 'absolute',
+              width: 19,
+              height: 2,
+              transform: 'rotate(-28deg)',
+              backgroundColor: '#465a7a',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              width: 14,
+              height: 2,
+              transform: 'translateY(5px) rotate(-28deg)',
+              backgroundColor: '#a3523d',
             }}
           />
         </div>

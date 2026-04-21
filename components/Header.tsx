@@ -2,22 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { RiArrowRightUpLine, RiBookLine, RiDiscordFill, RiGithubFill, RiLoginCircleLine, RiMenuLine, RiCloseLine } from 'react-icons/ri';
+import { RiArrowRightUpLine, RiBookLine, RiDiscordFill, RiLoginCircleLine, RiMenuLine, RiCloseLine } from 'react-icons/ri';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
-import { IRUKA_DOCS_OVERVIEW_URL, IRUKA_GITHUB_URL } from '@/lib/iruka-links';
+import { IRUKA_DOCS_OVERVIEW_URL } from '@/lib/iruka-links';
 
 const navLinks = [
   { href: IRUKA_DOCS_OVERVIEW_URL, label: 'Docs', icon: RiBookLine, external: true },
-  { href: IRUKA_GITHUB_URL, label: 'GitHub', icon: RiGithubFill, external: true },
   { href: 'https://discord.gg/Ur4dwN3aPS', label: 'Discord', icon: RiDiscordFill, external: true },
 ];
 
 function BrandMark() {
   return (
-    <span className="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-[0.6rem] border border-border bg-[color:var(--surface-panel)]">
-      <span className="absolute inset-[8px] rounded-full border border-[color:color-mix(in_oklch,var(--signal-copper)_36%,transparent)]" />
-      <span className="h-2 w-2 rounded-full bg-[color:var(--signal-copper)]" />
+    <span className="relative inline-flex h-9 w-9 items-center justify-center rounded-[0.35rem] border border-border bg-[color:var(--surface-panel)]">
+      <span className="h-px w-5 -rotate-[28deg] bg-[color:var(--signal-copper)]" />
     </span>
   );
 }
@@ -38,19 +36,19 @@ export function Header() {
       <div className="page-gutter pt-3 md:pt-4">
         <div
           className={cn(
-            'relative overflow-hidden rounded-[0.7rem] border px-4 py-3 transition-all duration-300 md:px-5',
+            'relative overflow-hidden rounded-[0.5rem] border px-4 py-3 transition-all duration-300 md:px-5',
             scrolled
-              ? 'border-[color:color-mix(in_oklch,var(--stroke-strong)_70%,var(--stroke-soft))] bg-[color:color-mix(in_oklch,var(--surface-panel)_92%,white)] shadow-[0_16px_34px_-24px_rgba(57,42,28,0.16)]'
-              : 'border-border bg-[color:color-mix(in_oklch,var(--surface-panel)_78%,white)]'
+              ? 'border-[color:color-mix(in_oklch,var(--stroke-strong)_52%,var(--stroke-soft))] bg-[color:color-mix(in_oklch,var(--surface-panel)_96%,var(--surface-muted))] shadow-[0_16px_34px_-30px_rgba(31,45,68,0.24)]'
+              : 'border-border bg-[color:color-mix(in_oklch,var(--surface-panel)_78%,transparent)]'
           )}
         >
-          <div className="absolute inset-0 bg-line-grid opacity-20" aria-hidden="true" />
+          <div className="absolute inset-0 bg-line-grid opacity-[0.035]" aria-hidden="true" />
           <div className="relative flex items-center justify-between gap-4">
             <Link href="/" className="flex items-center gap-3 no-underline">
               <BrandMark />
               <div className="min-w-0">
-                <div className="font-display text-[1.45rem] leading-none text-foreground">Iruka</div>
-                <div className="mt-1 text-[0.68rem] uppercase tracking-[0.22em] text-[color:color-mix(in_oklch,var(--ink-primary)_88%,var(--signal-copper))]">
+                <div className="font-display text-[1.22rem] leading-none text-foreground">Iruka</div>
+                <div className="mt-1 hidden text-[0.62rem] uppercase tracking-[0.1em] text-[color:color-mix(in_oklch,var(--ink-primary)_84%,var(--signal-copper))] sm:block">
                   Open Data For Smarter Agents
                 </div>
               </div>
@@ -64,7 +62,7 @@ export function Header() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="ui-link inline-flex items-center gap-2 rounded-[0.55rem] px-3 py-2 text-sm no-underline"
+                    className="ui-link inline-flex items-center gap-2 rounded-[0.38rem] px-3 py-2 text-sm no-underline"
                   >
                     <link.icon className="h-4 w-4" />
                     <span>{link.label}</span>
@@ -74,7 +72,7 @@ export function Header() {
                   <Link
                     key={link.label}
                     href={link.href}
-                    className="ui-link inline-flex items-center gap-2 rounded-[0.55rem] px-3 py-2 text-sm no-underline"
+                    className="ui-link inline-flex items-center gap-2 rounded-[0.38rem] px-3 py-2 text-sm no-underline"
                   >
                     <link.icon className="h-4 w-4" />
                     <span>{link.label}</span>

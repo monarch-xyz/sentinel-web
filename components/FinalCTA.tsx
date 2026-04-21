@@ -1,8 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { RiBookOpenLine, RiDiscordLine, RiGithubLine } from 'react-icons/ri';
-import { IRUKA_DOCS_OVERVIEW_URL, IRUKA_GITHUB_URL } from '@/lib/iruka-links';
+import { RiBookOpenLine, RiDiscordLine } from 'react-icons/ri';
+import { IRUKA_DOCS_OVERVIEW_URL } from '@/lib/iruka-links';
 
 export function FinalCTA() {
   return (
@@ -28,12 +28,6 @@ export function FinalCTA() {
                 <span className="ui-button px-5 py-3.5" data-variant="primary">
                   <RiDiscordLine className="h-4 w-4" />
                   Join Discord
-                </span>
-              </a>
-              <a href={IRUKA_GITHUB_URL} target="_blank" rel="noopener noreferrer" className="no-underline">
-                <span className="ui-button px-5 py-3.5" data-variant="secondary">
-                  <RiGithubLine className="h-4 w-4" />
-                  GitHub
                 </span>
               </a>
               <a href={IRUKA_DOCS_OVERVIEW_URL} target="_blank" rel="noopener noreferrer" className="no-underline">

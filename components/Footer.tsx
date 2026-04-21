@@ -1,11 +1,10 @@
 'use client';
 
-import { RiArrowRightUpLine, RiBookLine, RiDiscordFill, RiExternalLinkLine, RiGithubFill } from 'react-icons/ri';
-import { IRUKA_DOCS_OVERVIEW_URL, IRUKA_GITHUB_URL } from '@/lib/iruka-links';
+import { RiArrowRightUpLine, RiBookLine, RiDiscordFill, RiExternalLinkLine } from 'react-icons/ri';
+import { IRUKA_DOCS_OVERVIEW_URL } from '@/lib/iruka-links';
 
 const links = [
   { href: IRUKA_DOCS_OVERVIEW_URL, label: 'Docs', icon: RiBookLine, external: true },
-  { href: IRUKA_GITHUB_URL, label: 'GitHub', icon: RiGithubFill, external: true },
   { href: 'https://discord.gg/Ur4dwN3aPS', label: 'Discord', icon: RiDiscordFill, external: true },
 ];
 
@@ -20,13 +19,13 @@ export function Footer() {
               <div>
                 <h2 className="ui-section-title max-w-xl">A signal layer that helps agents get smarter from open data.</h2>
                 <p className="ui-copy mt-4">
-                  Define the condition once. Let Iruka keep listening across state, indexed history,
+                  Define the condition once. Let Iruka keep evaluating state, indexed history,
                   and raw events until open data resolves into something your agent can actually use.
                 </p>
               </div>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
               {links.map((link) => (
                 <a
                   key={link.label}

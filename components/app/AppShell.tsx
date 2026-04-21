@@ -66,12 +66,12 @@ export function AppShell({ children, telegramLinked }: AppShellProps) {
           <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div className="flex min-w-0 items-center gap-3">
               <Link href="/app" className="flex items-center gap-3 no-underline">
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-[0.65rem] border border-border bg-[color:var(--surface-panel)]">
-                  <span className="h-2.5 w-2.5 rounded-full bg-[color:var(--signal-copper)]" />
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-[0.35rem] border border-border bg-[color:var(--surface-panel)]">
+                  <span className="h-px w-5 -rotate-[28deg] bg-[color:var(--signal-copper)]" />
                 </span>
                 <div className="min-w-0">
-                  <div className="font-display text-[1.5rem] leading-none text-foreground">Iruka</div>
-                  <div className="mt-1 text-[0.68rem] uppercase tracking-[0.28em] text-secondary">
+                  <div className="font-display text-[1.24rem] leading-none text-foreground">Iruka</div>
+                  <div className="mt-1 text-[0.62rem] uppercase tracking-[0.1em] text-secondary">
                     Operator Console
                   </div>
                 </div>

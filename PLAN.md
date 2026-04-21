@@ -64,7 +64,7 @@ Show real DSL examples:
 - POST /simulate - Test without deploying
 
 ### 7. Footer
-- Links: Docs, GitHub, Discord, iruka.tech
+- Links: Docs, Discord, iruka.tech
 
 ## Tech Stack
 - **Framework:** Next.js 14 (App Router)
@@ -151,18 +151,18 @@ iruka-web/
 - 06:00 - Review and handoff
 
 ### Phase 6: Deployment ✅
-- [x] GitHub repo created: iruka-tech/iruka
+- [x] Private source repository lives under iruka-tech
 - [x] ESLint errors fixed
 - [x] Build passes clean
 - [ ] Deploy to Vercel (iruka.tech) — **READY**
 
 ## Deployment
 
-**Repository:** https://github.com/iruka-tech/iruka
+**Repository:** Private source repository under `iruka-tech`
 
 **To deploy:**
 1. Import to Vercel: https://vercel.com/new
-2. Select `iruka-tech/iruka`
+2. Select the private Iruka web repository under `iruka-tech`
 3. Set custom domain: `iruka.tech`
 4. Deploy
 
