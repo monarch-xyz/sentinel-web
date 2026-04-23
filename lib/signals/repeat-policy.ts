@@ -4,12 +4,20 @@ export const DEFAULT_SIGNAL_REPEAT_POLICY: SignalRepeatPolicy = { mode: 'cooldow
 
 export const buildSignalRepeatPolicy = (
   mode: SignalRepeatPolicyMode,
-  snoozeMinutes?: number | null
+  snoozeMinutes?: number | null,
+  cooldownMinutes?: number | null
 ): SignalRepeatPolicy => {
   if (mode === 'post_first_alert_snooze') {
     return {
       mode,
       snooze_minutes: Number(snoozeMinutes ?? 0),
+    };
+  }
+
+  if (mode === 'cooldown') {
+    return {
+      mode,
+      cooldown_minutes: Number(cooldownMinutes ?? 0),
     };
   }
 
@@ -28,7 +36,7 @@ export const describeSignalRepeatPolicy = (
 
   switch (resolvedPolicy.mode) {
     case 'cooldown':
-      return `Cooldown ${cooldownMinutes ?? 0}m`;
+      return `Cooldown ${resolvedPolicy.cooldown_minutes ?? cooldownMinutes ?? 0}m`;
     case 'post_first_alert_snooze':
       return `Post-first snooze ${resolvedPolicy.snooze_minutes}m`;
     case 'until_resolved':

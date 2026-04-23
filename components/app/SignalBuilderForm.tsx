@@ -165,7 +165,11 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
           dropPercent: Number(formState.dropPercent),
           windowDuration: formState.windowDuration,
           cooldownMinutes: Number(formState.cooldownMinutes),
-          repeatPolicy: buildSignalRepeatPolicy(formState.repeatMode, Number(formState.snoozeMinutes)),
+          repeatPolicy: buildSignalRepeatPolicy(
+            formState.repeatMode,
+            Number(formState.snoozeMinutes),
+            Number(formState.cooldownMinutes)
+          ),
           name: formState.name,
           description: formState.description,
         }
@@ -178,7 +182,11 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
             amountThreshold: Number(formState.amountThreshold),
             windowDuration: formState.windowDuration,
             cooldownMinutes: Number(formState.cooldownMinutes),
-            repeatPolicy: buildSignalRepeatPolicy(formState.repeatMode, Number(formState.snoozeMinutes)),
+            repeatPolicy: buildSignalRepeatPolicy(
+              formState.repeatMode,
+              Number(formState.snoozeMinutes),
+              Number(formState.cooldownMinutes)
+            ),
             name: formState.name,
             description: formState.description,
           }
@@ -191,7 +199,11 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
             dropPercent: Number(formState.dropPercent),
             windowDuration: formState.windowDuration,
             cooldownMinutes: Number(formState.cooldownMinutes),
-            repeatPolicy: buildSignalRepeatPolicy(formState.repeatMode, Number(formState.snoozeMinutes)),
+            repeatPolicy: buildSignalRepeatPolicy(
+              formState.repeatMode,
+              Number(formState.snoozeMinutes),
+              Number(formState.cooldownMinutes)
+            ),
             name: formState.name,
             description: formState.description,
           };
@@ -209,18 +221,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
     }
 
     previewPayload = buildSignalTemplate(previewInput);
-    previewDefinition = JSON.stringify(
-      {
-        name: previewPayload.name,
-        description: previewPayload.description,
-        definition: previewPayload.definition,
-        delivery: previewPayload.delivery,
-        cooldown_minutes: previewPayload.cooldown_minutes,
-        repeat_policy: previewPayload.repeat_policy,
-      },
-      null,
-      2
-    );
+    previewDefinition = JSON.stringify(previewPayload, null, 2);
   } catch (previewBuildError) {
     previewError = previewBuildError instanceof Error ? previewBuildError.message : 'Unable to build template preview.';
   }

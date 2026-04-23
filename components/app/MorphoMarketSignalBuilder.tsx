@@ -174,7 +174,7 @@ export function MorphoMarketSignalBuilder() {
     dropPercent: Number(dropPercent),
     windowDuration,
     cooldownMinutes: Number(cooldownMinutes),
-    repeatPolicy: buildSignalRepeatPolicy(repeatMode, Number(snoozeMinutes)),
+    repeatPolicy: buildSignalRepeatPolicy(repeatMode, Number(snoozeMinutes), Number(cooldownMinutes)),
     name,
     description,
   };
@@ -185,18 +185,7 @@ export function MorphoMarketSignalBuilder() {
 
   try {
     previewPayload = buildSignalTemplate(previewInput);
-    previewDefinition = JSON.stringify(
-      {
-        name: previewPayload.name,
-        description: previewPayload.description,
-        definition: previewPayload.definition,
-        delivery: previewPayload.delivery,
-        cooldown_minutes: previewPayload.cooldown_minutes,
-        repeat_policy: previewPayload.repeat_policy,
-      },
-      null,
-      2
-    );
+    previewDefinition = JSON.stringify(previewPayload, null, 2);
   } catch (error) {
     previewError = error instanceof Error ? error.message : 'Unable to build signal preview.';
   }

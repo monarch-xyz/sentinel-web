@@ -17,23 +17,23 @@ const features = [
   },
   {
     icon: RiDatabase2Line,
-    title: 'Provider routing and gating',
-    description: 'RPC, indexed reads, and HyperSync raw scans stay behind the API, with health and capability checks before runtime failure.',
+    title: 'Sources stay behind the signal',
+    description: 'Users define the condition they care about instead of wiring separate RPC, indexer, and event-reader paths.',
   },
   {
     icon: RiShieldCheckLine,
     title: 'Explainable delivery',
-    description: 'Webhooks and history include condition results and conditions_met, so an agent knows why it woke up.',
+    description: 'Delivery payloads include condition context so an agent can act on clear trigger reasons.',
   },
   {
     icon: RiPulseLine,
-    title: 'Scheduled or input-triggered',
-    description: 'Default scheduled evaluation covers monitoring; input triggers let your system wake a saved signal from another event.',
+    title: 'Multiple wake-up paths',
+    description: 'Define interval schedules, UTC cron schedules, or signal-to-signal wake-ups in the same triggers array.',
   },
   {
     icon: RiHistoryLine,
-    title: 'Simulation before activation',
-    description: 'Use simulation and first-trigger search to test a rule over a range before trusting it in production.',
+    title: 'Readable signal intent',
+    description: 'A saved signal shows when it wakes, what it checks, and where it notifies without spreading that logic across scripts.',
   },
 ];
 

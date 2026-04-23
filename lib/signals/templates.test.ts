@@ -24,11 +24,15 @@ const assertDocCompatibleCondition = (condition: SignalCondition) => {
 };
 
 const assertDocCompatibleTemplatePayload = (payload: CreateSignalRequest) => {
+  assert.equal(payload.version, '1');
   assert.ok(payload.name, 'template payloads require name');
+  assert.ok(payload.triggers.length > 0, 'template payloads require triggers');
   assert.ok(payload.definition.window.duration, 'template payloads require definition.window.duration');
   assert.ok(payload.definition.scope.chains.length > 0, 'template payloads require scope.chains');
   assert.ok(payload.definition.conditions.length > 0, 'template payloads require at least one condition');
-  assert.ok(payload.webhook_url || payload.delivery, 'template payloads require webhook_url or delivery');
+  assert.deepEqual(payload.delivery, [{ type: 'telegram' }]);
+  assert.ok(payload.metadata?.description, 'template payloads require metadata.description');
+  assert.ok(payload.metadata?.repeat_policy, 'template payloads require metadata.repeat_policy');
   payload.definition.conditions.forEach(assertDocCompatibleCondition);
 };
 
@@ -39,7 +43,16 @@ test('signal templates default to cooldown repeat policy', () => {
     whaleAddresses: ['0x1111111111111111111111111111111111111111'],
   });
 
-  assert.deepEqual(payload.repeat_policy, { mode: 'cooldown' });
+  assert.deepEqual(payload.metadata?.repeat_policy, { mode: 'cooldown', cooldown_minutes: 15 });
+  assert.deepEqual(payload.triggers, [
+    {
+      type: 'schedule',
+      schedule: {
+        kind: 'interval',
+        interval_seconds: 300,
+      },
+    },
+  ]);
 });
 
 test('whale movement templates stay compatible with the current Iruka docs schema', () => {
@@ -53,7 +66,7 @@ test('whale movement templates stay compatible with the current Iruka docs schem
   });
 
   assertDocCompatibleTemplatePayload(payload);
-  assert.deepEqual(payload.delivery, { provider: 'telegram' });
+  assert.deepEqual(payload.delivery, [{ type: 'telegram' }]);
 });
 
 test('erc20 raw-event templates stay compatible with the current Iruka docs schema', () => {
@@ -84,7 +97,7 @@ test('erc4626 withdraw templates stay compatible with the current Iruka docs sch
   });
 
   assertDocCompatibleTemplatePayload(payload);
-  assert.deepEqual(payload.delivery, { provider: 'telegram' });
+  assert.deepEqual(payload.delivery, [{ type: 'telegram' }]);
 });
 
 test('signal templates forward post-first-alert snooze repeat policy', () => {
@@ -99,11 +112,10 @@ test('signal templates forward post-first-alert snooze repeat policy', () => {
     cooldownMinutes: 15,
   });
 
-  assert.deepEqual(payload.repeat_policy, {
+  assert.deepEqual(payload.metadata?.repeat_policy, {
     mode: 'post_first_alert_snooze',
     snooze_minutes: 1440,
   });
-  assert.equal(payload.cooldown_minutes, 15);
 });
 
 test('signal templates reject invalid snooze repeat policy input', () => {

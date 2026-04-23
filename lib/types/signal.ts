@@ -123,7 +123,7 @@ export interface SignalDefinition {
   window: TimeWindow;
 }
 
-export interface ManagedSignalDelivery {
+export interface LegacyManagedSignalDelivery {
   provider: 'telegram';
 }
 
@@ -131,6 +131,7 @@ export type SignalRepeatPolicyMode = 'cooldown' | 'post_first_alert_snooze' | 'u
 
 export interface CooldownRepeatPolicy {
   mode: 'cooldown';
+  cooldown_minutes?: number;
 }
 
 export interface PostFirstAlertSnoozeRepeatPolicy {
@@ -147,15 +148,65 @@ export type SignalRepeatPolicy =
   | PostFirstAlertSnoozeRepeatPolicy
   | UntilResolvedRepeatPolicy;
 
+export interface IntervalSchedule {
+  kind: 'interval';
+  interval_seconds: number;
+}
+
+export interface CronSchedule {
+  kind: 'cron';
+  expression: string;
+}
+
+export interface ScheduleTrigger {
+  type: 'schedule';
+  schedule: IntervalSchedule | CronSchedule;
+}
+
+export interface ExternalTrigger {
+  type: 'external';
+}
+
+export interface IrukaSignalTrigger {
+  type: 'iruka_signal';
+  id: string;
+}
+
+export type SignalTrigger = ScheduleTrigger | ExternalTrigger | IrukaSignalTrigger;
+
+export interface TelegramSignalDelivery {
+  type: 'telegram';
+}
+
+export type SignalDelivery = TelegramSignalDelivery;
+
+export interface SignalMetadata {
+  description?: string;
+  repeat_policy?: SignalRepeatPolicy;
+}
+
+export interface PublicSignalEnvelope {
+  version: string;
+  name: string;
+  triggers: SignalTrigger[];
+  definition: SignalDefinition;
+  delivery: SignalDelivery[];
+  metadata?: SignalMetadata;
+}
+
 export interface SignalRecord {
   id: string;
   user_id?: string;
+  version?: string;
   name: string;
-  description?: string | null;
+  triggers?: SignalTrigger[];
   definition: SignalDefinition;
+  delivery?: SignalDelivery[] | LegacyManagedSignalDelivery | null;
+  metadata?: SignalMetadata | null;
+  // Legacy response compatibility during schema migration.
+  description?: string | null;
   webhook_url?: string | null;
-  delivery?: ManagedSignalDelivery | null;
-  cooldown_minutes: number;
+  cooldown_minutes?: number | null;
   repeat_policy?: SignalRepeatPolicy | null;
   is_active: boolean;
   created_at: string;
@@ -164,24 +215,15 @@ export interface SignalRecord {
   last_evaluated_at?: string | null;
 }
 
-export interface CreateSignalRequest {
-  name: string;
-  description?: string;
-  definition: SignalDefinition;
-  webhook_url?: string;
-  delivery?: ManagedSignalDelivery;
-  cooldown_minutes?: number;
-  repeat_policy?: SignalRepeatPolicy;
-}
+export type CreateSignalRequest = PublicSignalEnvelope;
 
 export interface UpdateSignalRequest {
+  version?: string;
   name?: string;
-  description?: string;
+  triggers?: SignalTrigger[];
   definition?: SignalDefinition;
-  webhook_url?: string;
-  delivery?: ManagedSignalDelivery;
-  cooldown_minutes?: number;
-  repeat_policy?: SignalRepeatPolicy;
+  delivery?: SignalDelivery[];
+  metadata?: SignalMetadata;
   is_active?: boolean;
 }
 

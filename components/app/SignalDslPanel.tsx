@@ -43,7 +43,11 @@ export function SignalDslPanel({
   const chainList = signal.definition.scope.chains.join(', ');
   const focus = getSignalFocusDetails(signal.definition);
   const trackingSummary = getSignalTrackingSummary(signal.definition);
-  const repeatPolicySummary = describeSignalRepeatPolicy(signal.repeat_policy, signal.cooldown_minutes);
+  const repeatPolicySummary = describeSignalRepeatPolicy(
+    signal.metadata?.repeat_policy ?? signal.repeat_policy,
+    signal.cooldown_minutes
+  );
+  const signalDescription = signal.metadata?.description ?? signal.description;
 
   return (
     <Card className={cn('space-y-5', className)}>
@@ -51,7 +55,7 @@ export function SignalDslPanel({
         <div>
           <div className="ui-kicker">{eyebrow}</div>
           <h2 className="mt-4 font-display text-[1.9rem] leading-none text-foreground">{title}</h2>
-          <p className="mt-3 text-sm leading-relaxed text-secondary">{(description ?? signal.description) || summary}</p>
+          <p className="mt-3 text-sm leading-relaxed text-secondary">{(description ?? signalDescription) || summary}</p>
         </div>
         <span className="ui-chip" data-tone={signal.is_active ? 'accent' : undefined}>
           {signal.is_active ? 'Active' : 'Paused'}

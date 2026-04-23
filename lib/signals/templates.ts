@@ -259,22 +259,46 @@ const assertRepeatPolicy = (repeatPolicy: SignalRepeatPolicy) => {
   }
 };
 
+const withCooldownRepeatPolicy = (repeatPolicy: SignalRepeatPolicy, cooldownMinutes: number): SignalRepeatPolicy => {
+  if (repeatPolicy.mode !== 'cooldown') {
+    return repeatPolicy;
+  }
+
+  return {
+    ...repeatPolicy,
+    cooldown_minutes: cooldownMinutes,
+  };
+};
+
 const buildManagedTelegramSignal = (
   name: string,
   description: string,
   definition: SignalDefinition,
   cooldownMinutes: number,
   repeatPolicy: SignalRepeatPolicy = DEFAULT_SIGNAL_REPEAT_POLICY
-): CreateSignalRequest => ({
-  name,
-  description,
-  definition,
-  delivery: {
-    provider: 'telegram',
-  },
-  cooldown_minutes: cooldownMinutes,
-  repeat_policy: repeatPolicy,
-});
+): CreateSignalRequest => {
+  const metadataRepeatPolicy = withCooldownRepeatPolicy(repeatPolicy, cooldownMinutes);
+
+  return {
+    version: '1',
+    name,
+    triggers: [
+      {
+        type: 'schedule',
+        schedule: {
+          kind: 'interval',
+          interval_seconds: 300,
+        },
+      },
+    ],
+    definition,
+    delivery: [{ type: 'telegram' }],
+    metadata: {
+      description,
+      repeat_policy: metadataRepeatPolicy,
+    },
+  };
+};
 
 export const parseWhaleAddresses = (value: string[] | string) => {
   const rawValues = Array.isArray(value) ? value : value.split(/[\n,]/);

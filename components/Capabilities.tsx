@@ -1,177 +1,63 @@
 'use client';
 
-import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
 import { SectionTag } from './ui/SectionTag';
-import { CodeBlock } from './ui/CodeBlock';
 
 type UseCase = {
   id: string;
   title: string;
   summary: string;
-  details: string[];
-  code: string;
 };
 
 const useCases: UseCase[] = [
   {
     id: 'net-flow-agent',
-    title: 'Net flow trigger',
-    summary: 'Let an agent track inbound minus outbound value without writing log scanners.',
-    details: [
-      'Compose two raw event blocks with an expression source.',
-      'Aggregate decoded ERC-20 Transfer value over one window.',
-      'Wake the agent only when net flow crosses a threshold.',
-    ],
-    code: `{
-  "name": "Net USDC flow",
-  "definition": {
-    "scope": { "chains": [1], "protocol": "all" },
-    "window": { "duration": "1h" },
-    "conditions": [
-      {
-        "type": "threshold",
-        "source": {
-          "kind": "expression",
-          "op": "sub",
-          "left": {
-            "kind": "raw_event",
-            "aggregation": "sum",
-            "field": "value",
-            "event": { "kind": "erc20_transfer" },
-            "filters": [{ "field": "to", "op": "eq", "value": "0xAgentVault" }]
-          },
-          "right": {
-            "kind": "raw_event",
-            "aggregation": "sum",
-            "field": "value",
-            "event": { "kind": "erc20_transfer" },
-            "filters": [{ "field": "from", "op": "eq", "value": "0xAgentVault" }]
-          }
-        },
-        "operator": ">",
-        "value": 0
-      }
-    ]
-  }
-}`,
+    title: 'Net flow watch',
+    summary: 'Track inbound minus outbound value without writing log scanners.',
   },
   {
     id: 'holder-cluster',
     title: 'Holder cluster change',
-    summary: 'Let an agent detect coordinated ERC-4626 owner movement with grouped state checks.',
-    details: [
-      'Track N of M addresses without duplicating condition definitions.',
-      'Use change conditions over state-backed aliases.',
-      'Keep incident reminders quiet with repeat policy.',
-    ],
-    code: `{
-  "name": "Vault holder exits",
-  "definition": {
-    "scope": { "chains": [1], "protocol": "all" },
-    "window": { "duration": "7d" },
-    "conditions": [
-      {
-        "type": "group",
-        "addresses": ["0xA", "0xB", "0xC"],
-        "requirement": { "count": 2, "of": 3 },
-        "conditions": [
-          {
-            "type": "change",
-            "source": { "kind": "alias", "name": "ERC4626.Position.shares" },
-            "direction": "decrease",
-            "by": { "percent": 20 },
-            "contract_address": "0xVault"
-          }
-        ]
-      }
-    ]
+    summary: 'Detect coordinated ERC-4626 owner movement with grouped state checks.',
   },
-  "repeat_policy": { "mode": "until_resolved" }
-}`,
+  {
+    id: 'signal-chain',
+    title: 'Signal-to-signal workflow',
+    summary: 'Let one signal wake another when a workflow needs multiple stages.',
   },
 ];
 
 export function Capabilities() {
-  const [activeUseCaseId, setActiveUseCaseId] = useState(useCases[0].id);
-  const activeUseCase = useCases.find((useCase) => useCase.id === activeUseCaseId) ?? useCases[0];
-
   return (
     <section className="relative py-16 md:py-24">
       <div className="page-gutter">
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,0.86fr)_minmax(0,1.14fr)]">
-          <div className="ui-panel p-6 sm:p-7">
-            <SectionTag>What You Can Build</SectionTag>
-            <h2 className="ui-section-title mt-5">Concrete automation patterns an agent can author today.</h2>
-            <p className="ui-copy mt-4">
-              The current backend accepts source blocks, grouped checks, expressions, windows, and delivery policy.
-            </p>
-
-            <div className="mt-8 space-y-3">
-              {useCases.map((useCase, index) => {
-                const isActive = useCase.id === activeUseCaseId;
-
-                return (
-                  <motion.button
-                    key={useCase.id}
-                    type="button"
-                    initial={{ opacity: 0, y: 18 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.35, delay: index * 0.08 }}
-                    onClick={() => setActiveUseCaseId(useCase.id)}
-                    data-active={isActive}
-                    className={cn('ui-option w-full px-4 py-4 text-left', isActive && 'text-foreground')}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="ui-kicker">{isActive ? 'Selected Pattern' : 'Pattern'}</div>
-                        <p className="mt-3 font-display text-[1.35rem] leading-none text-foreground">
-                          {useCase.title}
-                        </p>
-                        <p className="mt-3 text-sm leading-relaxed text-[color:var(--ink-primary)]">{useCase.summary}</p>
-                      </div>
-                    </div>
-                  </motion.button>
-                );
-              })}
-            </div>
-          </div>
-
-          <motion.div
-            key={activeUseCase.id}
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.24 }}
-            className="ui-panel p-6 sm:p-7"
-          >
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="ui-chip" data-tone="accent">
-                {activeUseCase.title}
-              </span>
-              <span className="ui-chip">Backend DSL</span>
-            </div>
-
-            <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,0.64fr)_minmax(0,1fr)]">
-              <div className="space-y-3">
-                {activeUseCase.details.map((detail) => (
-                  <div key={detail} className="ui-panel-ghost px-4 py-3">
-                    <p className="text-sm leading-relaxed text-[color:var(--ink-primary)]">{detail}</p>
-                  </div>
-                ))}
-              </div>
-
-              <CodeBlock
-                code={activeUseCase.code}
-                language="json"
-                filename={`${activeUseCase.id}.json`}
-                showLineNumbers
-                tone="light"
-              />
-            </div>
-          </motion.div>
+        <div className="mx-auto max-w-3xl text-center">
+          <SectionTag>What You Can Build</SectionTag>
+          <h2 className="ui-section-title mt-5">Readable monitoring rules without watcher scripts.</h2>
+          <p className="ui-copy mx-auto mt-4">
+            Use the same signal shape for different monitoring patterns: define when it wakes, what it checks, and where it notifies.
+          </p>
         </div>
+
+        <motion.div
+          className="mt-10 grid gap-4 md:grid-cols-3"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
+        >
+          {useCases.map((useCase) => (
+            <motion.div
+              key={useCase.id}
+              variants={{ hidden: { opacity: 0, y: 18 }, visible: { opacity: 1, y: 0, transition: { duration: 0.35 } } }}
+              className="ui-panel p-5"
+            >
+              <div className="ui-kicker">Pattern</div>
+              <h3 className="mt-4 font-display text-[1.45rem] leading-none text-foreground">{useCase.title}</h3>
+              <p className="mt-4 text-sm leading-relaxed text-secondary">{useCase.summary}</p>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
