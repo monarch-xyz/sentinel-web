@@ -65,16 +65,15 @@ function TypingCode() {
   const frame = editFrames[frameIndex];
 
   useEffect(() => {
-    setVisibleChars(0);
-  }, [frameIndex]);
-
-  useEffect(() => {
     if (visibleChars < frame.code.length) {
       const timeout = window.setTimeout(() => setVisibleChars((value) => value + 3), 18);
       return () => window.clearTimeout(timeout);
     }
 
-    const timeout = window.setTimeout(() => setFrameIndex((value) => (value + 1) % editFrames.length), 1600);
+    const timeout = window.setTimeout(() => {
+      setFrameIndex((value) => (value + 1) % editFrames.length);
+      setVisibleChars(0);
+    }, 1600);
     return () => window.clearTimeout(timeout);
   }, [frame.code.length, visibleChars]);
 
