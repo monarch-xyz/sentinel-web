@@ -8,8 +8,8 @@ import { IRUKA_DOCS_OVERVIEW_URL } from '@/lib/iruka-links';
 
 const previewSignals = [
   { label: 'Envelope', value: 'version, name, triggers, definition, delivery, metadata', tone: 'accent' },
-  { label: 'Runtime', value: 'Schedule evaluation, simulation, and repeat-policy handling stay server-side', tone: 'default' },
-  { label: 'Delivery', value: 'Current public delivery target is Telegram', tone: 'telegram' },
+  { label: 'Triggers', value: 'Use one schedule, a cron, or combine trigger entries when a workflow needs more than one wake-up path', tone: 'default' },
+  { label: 'Delivery', value: 'Route matched signals to Telegram without changing the condition definition', tone: 'telegram' },
 ] as const;
 
 const previewCode = `{
@@ -19,6 +19,10 @@ const previewCode = `{
     {
       "type": "schedule",
       "schedule": { "kind": "interval", "interval_seconds": 300 }
+    },
+    {
+      "type": "iruka_signal",
+      "id": "sig_upstream_abc123"
     }
   ],
   "definition": {
@@ -79,9 +83,8 @@ export function Hero() {
                 transition={{ duration: 0.45, delay: 0.2 }}
                 className="ui-copy mt-6 text-base sm:text-lg"
               >
-                Autonomous agents should decide and act, not maintain polling loops, event decoders,
-                retry logic, time windows, and alert deduplication. Iruka gives them one API for
-                durable conditions across onchain state and history with structured delivery.
+                Autonomous agents should decide and act, not maintain watcher code. Iruka gives them
+                one compact schema for the condition, the wake-up paths, and where the notification goes.
               </motion.p>
 
               <motion.div

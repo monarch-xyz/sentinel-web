@@ -10,6 +10,10 @@ const canonicalSnippet = `{
     {
       "type": "schedule",
       "schedule": { "kind": "interval", "interval_seconds": 300 }
+    },
+    {
+      "type": "iruka_signal",
+      "id": "sig_upstream_abc123"
     }
   ],
   "definition": {
@@ -52,9 +56,9 @@ export function HowItWorks() {
       <div className="page-gutter">
         <div className="mx-auto max-w-3xl text-center">
           <div className="ui-kicker justify-center">Public Schema</div>
-          <h2 className="ui-section-title mt-5">One canonical envelope for signal creation.</h2>
+          <h2 className="ui-section-title mt-5">Define one signal with one or more wake-up paths.</h2>
           <p className="ui-copy mx-auto mt-4">
-            Use one payload shape for authoring. Keep trigger and delivery variation focused in small blocks.
+            The user should see the clean split: triggers decide when to wake, definition decides what to check, delivery decides where the alert goes.
           </p>
         </div>
 
@@ -81,7 +85,7 @@ export function HowItWorks() {
               className="ui-panel p-5"
             >
               <div className="ui-kicker">Trigger variations</div>
-              <p className="mt-3 text-sm text-secondary">Public trigger types today: schedule and iruka_signal.</p>
+              <p className="mt-3 text-sm text-secondary">Swap the schedule style or add another trigger entry without rewriting the condition.</p>
               <div className="mt-4">
                 <CodeBlock code={triggerVariationSnippet} language="json" tone="light" showHeader={false} />
               </div>
@@ -92,7 +96,7 @@ export function HowItWorks() {
               className="ui-panel p-5"
             >
               <div className="ui-kicker">Delivery</div>
-              <p className="mt-3 text-sm text-secondary">Public managed delivery currently routes through Telegram.</p>
+              <p className="mt-3 text-sm text-secondary">Delivery is its own field, so notification routing does not change the trigger or definition.</p>
               <div className="mt-4">
                 <CodeBlock code={deliverySnippet} language="json" tone="light" showHeader={false} />
               </div>

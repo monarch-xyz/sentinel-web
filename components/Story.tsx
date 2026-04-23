@@ -7,23 +7,23 @@ const storyBeats = [
   {
     id: 'problem',
     tag: 'Problem',
-    title: 'Agents are good at decisions, not long-running monitoring infrastructure.',
+    title: 'Without Iruka, every alert becomes bespoke watcher code.',
     content:
-      'The brittle part is operational: source routing, windows, retries, deduplication, and controlled delivery behavior over time.',
+      'You have to decide when to check, what to evaluate, how to avoid noisy repeats, and where the alert should land.',
   },
   {
     id: 'contract',
     tag: 'Contract',
-    title: 'Iruka exposes one public signal envelope.',
+    title: 'With Iruka, triggers are explicit fields, not hidden glue code.',
     content:
-      'Author with version, name, triggers, definition, delivery, and metadata. The shape stays compact while still covering serious monitoring use cases.',
+      'Start with a schedule, switch to cron, or add another Iruka signal as a wake-up path. The condition and delivery stay separate.',
   },
   {
-    id: 'runtime',
-    tag: 'Runtime',
-    title: 'The platform handles evaluation and repeat behavior.',
+    id: 'result',
+    tag: 'Result',
+    title: 'Users get a cleaner rule they can read, edit, and reuse.',
     content:
-      'Signals run on schedule or upstream signal triggers, then produce delivery-ready notifications with condition context.',
+      'The important parts are visible in one JSON object: when it wakes, what it checks, and where the notification goes.',
   },
 ];
 
@@ -33,9 +33,9 @@ export function Story() {
       <div className="page-gutter">
         <div className="mb-10 max-w-3xl">
           <SectionTag>First Principles</SectionTag>
-          <h2 className="ui-section-title mt-5">A dependable trigger contract beats another raw feed.</h2>
+          <h2 className="ui-section-title mt-5">Define the trigger contract instead of wiring another watcher.</h2>
           <p className="ui-copy mt-4">
-            Iruka is the stable layer between open chain data and agent actions.
+            The advantage is not backend plumbing. It is that users can describe monitoring intent directly.
           </p>
         </div>
 

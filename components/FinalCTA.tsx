@@ -20,8 +20,8 @@ export function FinalCTA() {
             <div className="ui-kicker justify-center">Start Building</div>
             <h2 className="ui-section-title mt-5">A durable signal layer for autonomous workflows.</h2>
             <p className="ui-copy mx-auto mt-4">
-              Define the condition once. Let Iruka handle sources, windows, simulation, repeat policy,
-              delivery, and explainable history until an agent has a reason to act.
+              Define when a signal should wake, what it should check, and where the notification should go.
+              Keep the rule readable instead of spreading that intent across watcher scripts.
             </p>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">

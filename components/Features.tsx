@@ -17,8 +17,8 @@ const features = [
   },
   {
     icon: RiDatabase2Line,
-    title: 'Provider routing and gating',
-    description: 'RPC, indexed reads, and HyperSync raw scans stay behind the API, with health and capability checks before runtime failure.',
+    title: 'Sources stay behind the signal',
+    description: 'Users define the condition they care about instead of wiring separate RPC, indexer, and event-reader paths.',
   },
   {
     icon: RiShieldCheckLine,
@@ -27,13 +27,13 @@ const features = [
   },
   {
     icon: RiPulseLine,
-    title: 'Scheduled and signal-chained',
-    description: 'Use schedule and iruka_signal trigger types now; external trigger support is in the target schema.',
+    title: 'Multiple wake-up paths',
+    description: 'Define interval schedules, UTC cron schedules, or signal-to-signal wake-ups in the same triggers array.',
   },
   {
     icon: RiHistoryLine,
-    title: 'Simulation before activation',
-    description: 'Use simulation and first-trigger search to test a rule over a range before trusting it in production.',
+    title: 'Readable signal intent',
+    description: 'A saved signal shows when it wakes, what it checks, and where it notifies without spreading that logic across scripts.',
   },
 ];
 
