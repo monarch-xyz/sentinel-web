@@ -4,13 +4,14 @@ import { useDeferredValue, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { RiArrowRightLine, RiSearchLine } from 'react-icons/ri';
 import { RepeatPolicyFields } from '@/components/app/RepeatPolicyFields';
+import { ScheduleFields } from '@/components/app/ScheduleFields';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { buildSignalRepeatPolicy } from '@/lib/signals/repeat-policy';
 import { buildSignalTemplate, describeSignalDefinition, type SignalTemplateRequest } from '@/lib/signals/templates';
 import type { SupportedVaultProtocolId, VaultHolder, VaultSummary } from '@/lib/vault-discovery/types';
-import type { SignalRepeatPolicyMode } from '@/lib/types/signal';
+import type { SignalRepeatPolicyMode, SignalSchedule } from '@/lib/types/signal';
 
 interface VaultUseCaseBuilderProps {
   protocol: SupportedVaultProtocolId;
@@ -39,6 +40,11 @@ const getProtocolSearchPlaceholder = (protocol: SupportedVaultProtocolId) =>
     ? 'Search vault name, symbol, asset, or address'
     : 'Search Euler vault name, symbol, or asset address';
 
+const DEFAULT_SCHEDULE: SignalSchedule = {
+  kind: 'interval',
+  interval_seconds: 300,
+};
+
 export function VaultUseCaseBuilder({ protocol }: VaultUseCaseBuilderProps) {
   const router = useRouter();
   const [isVaultPickerExpanded, setIsVaultPickerExpanded] = useState(true);
@@ -52,6 +58,7 @@ export function VaultUseCaseBuilder({ protocol }: VaultUseCaseBuilderProps) {
   const [dropPercent, setDropPercent] = useState('20');
   const [windowDuration, setWindowDuration] = useState('7d');
   const [cooldownMinutes, setCooldownMinutes] = useState('60');
+  const [schedule, setSchedule] = useState<SignalSchedule>(DEFAULT_SCHEDULE);
   const [repeatMode, setRepeatMode] = useState<SignalRepeatPolicyMode>('cooldown');
   const [snoozeMinutes, setSnoozeMinutes] = useState('1440');
   const [name, setName] = useState('');
@@ -183,6 +190,7 @@ export function VaultUseCaseBuilder({ protocol }: VaultUseCaseBuilderProps) {
     dropPercent: Number(dropPercent),
     windowDuration,
     cooldownMinutes: Number(cooldownMinutes),
+    schedule,
     repeatPolicy: buildSignalRepeatPolicy(repeatMode, Number(snoozeMinutes), Number(cooldownMinutes)),
     name,
     description,
@@ -406,6 +414,10 @@ export function VaultUseCaseBuilder({ protocol }: VaultUseCaseBuilderProps) {
                 className="ui-input"
               />
             </label>
+
+            <div className="sm:col-span-2">
+              <ScheduleFields schedule={schedule} onScheduleChange={setSchedule} />
+            </div>
 
             <RepeatPolicyFields
               mode={repeatMode}

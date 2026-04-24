@@ -4,6 +4,7 @@ import { describeSignalRepeatPolicy } from '@/lib/signals/repeat-policy';
 import { cn } from '@/lib/utils';
 import {
   describeSignalDefinition,
+  getPrimaryScheduleSummary,
   getSignalFocusDetails,
   getSignalTrackingSummary,
 } from '@/lib/signals/templates';
@@ -44,6 +45,7 @@ export function SignalDslPanel({
   const focus = getSignalFocusDetails(signal.definition);
   const trackingSummary = getSignalTrackingSummary(signal.definition);
   const repeatPolicySummary = describeSignalRepeatPolicy(signal.metadata?.repeat_policy);
+  const scheduleSummary = getPrimaryScheduleSummary(signal.triggers);
   const signalDescription = signal.metadata?.description;
 
   return (
@@ -66,6 +68,11 @@ export function SignalDslPanel({
           <p className="mt-1 text-xs text-secondary">Chains {chainList || '—'}</p>
         </div>
         <div className="ui-stat">
+          <p className="ui-stat-label">Wake-up</p>
+          <p className="mt-2 text-sm text-foreground">{scheduleSummary}</p>
+          <p className="mt-1 text-xs text-secondary">{repeatPolicySummary}</p>
+        </div>
+        <div className="ui-stat">
           <p className="ui-stat-label">{focus.label}</p>
           <p className="mt-2 break-all font-mono text-xs text-foreground">{focus.value}</p>
           {focus.href ? (
@@ -86,12 +93,10 @@ export function SignalDslPanel({
           <p className="mt-2 text-sm text-foreground">{logic}</p>
           <p className="mt-1 text-xs text-secondary">{conditionCount} top-level conditions</p>
         </div>
-        <div className="ui-stat">
+        <div className="ui-stat xl:col-span-4">
           <p className="ui-stat-label">Tracking</p>
           <p className="mt-2 text-sm text-foreground">{trackingSummary}</p>
-          <p className="mt-1 text-xs text-secondary">
-            Window {signal.definition.window.duration} · {repeatPolicySummary}
-          </p>
+          <p className="mt-1 text-xs text-secondary">Window {signal.definition.window.duration}</p>
         </div>
       </div>
 

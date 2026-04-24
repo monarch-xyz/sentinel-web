@@ -8,6 +8,8 @@ import type {
   SignalDefinition,
   SignalRepeatPolicy,
   SignalRecord,
+  SignalSchedule,
+  SignalTrigger,
 } from '@/lib/types/signal';
 import { DEFAULT_SIGNAL_REPEAT_POLICY, normalizeSignalRepeatPolicy } from '@/lib/signals/repeat-policy';
 
@@ -74,6 +76,7 @@ interface BaseTemplateRequest<TId extends SignalTemplateId> {
   chainId?: number;
   windowDuration?: string;
   cooldownMinutes?: number;
+  schedule?: SignalSchedule;
   repeatPolicy?: SignalRepeatPolicy;
   name?: string;
   description?: string;
@@ -249,6 +252,35 @@ const assertNonNegativeCooldown = (value: number) => {
   }
 };
 
+const isFiveFieldCronExpression = (value: string) => value.trim().split(/\s+/).length === 5;
+
+const normalizeTemplateSchedule = (schedule?: SignalSchedule): SignalSchedule => {
+  if (!schedule) {
+    return {
+      kind: 'interval',
+      interval_seconds: 300,
+    };
+  }
+
+  if (schedule.kind === 'interval') {
+    if (!Number.isInteger(schedule.interval_seconds) || schedule.interval_seconds < 1) {
+      throw new SignalTemplateError('Interval seconds must be a positive integer.');
+    }
+
+    return schedule;
+  }
+
+  const expression = schedule.expression.trim();
+  if (!expression || !isFiveFieldCronExpression(expression)) {
+    throw new SignalTemplateError('Cron expressions must use standard five-field syntax.');
+  }
+
+  return {
+    kind: 'cron',
+    expression,
+  };
+};
+
 const assertRepeatPolicy = (repeatPolicy: SignalRepeatPolicy) => {
   if (repeatPolicy.mode !== 'post_first_alert_snooze') {
     return;
@@ -275,9 +307,11 @@ const buildManagedTelegramSignal = (
   description: string,
   definition: SignalDefinition,
   cooldownMinutes: number,
-  repeatPolicy: SignalRepeatPolicy = DEFAULT_SIGNAL_REPEAT_POLICY
+  repeatPolicy: SignalRepeatPolicy = DEFAULT_SIGNAL_REPEAT_POLICY,
+  schedule?: SignalSchedule
 ): CreateSignalRequest => {
   const metadataRepeatPolicy = withCooldownRepeatPolicy(repeatPolicy, cooldownMinutes);
+  const normalizedSchedule = normalizeTemplateSchedule(schedule);
 
   return {
     version: '1',
@@ -285,10 +319,7 @@ const buildManagedTelegramSignal = (
     triggers: [
       {
         type: 'schedule',
-        schedule: {
-          kind: 'interval',
-          interval_seconds: 300,
-        },
+        schedule: normalizedSchedule,
       },
     ],
     definition,
@@ -361,6 +392,29 @@ const RAW_EVENT_LABELS: Record<RawEventKind, string> = {
 };
 
 const getRawEventLabel = (kind: RawEventKind) => RAW_EVENT_LABELS[kind];
+
+export const describeSignalSchedule = (schedule: SignalSchedule) => {
+  if (schedule.kind === 'interval') {
+    const seconds = schedule.interval_seconds;
+    if (seconds % 3600 === 0) {
+      const hours = seconds / 3600;
+      return `Every ${hours}h`;
+    }
+    if (seconds % 60 === 0) {
+      const minutes = seconds / 60;
+      return `Every ${minutes}m`;
+    }
+    return `Every ${seconds}s`;
+  }
+
+  return `Cron · ${schedule.expression} UTC`;
+};
+
+export const getPrimaryScheduleSummary = (triggers: SignalTrigger[]) => {
+  const scheduleTrigger = triggers.find((trigger): trigger is Extract<SignalTrigger, { type: 'schedule' }> => trigger.type === 'schedule');
+  return scheduleTrigger ? describeSignalSchedule(scheduleTrigger.schedule) : 'No schedule';
+};
+
 
 const getConditionMarketId = (condition: SignalCondition): string | null => {
   if ('market_id' in condition && typeof condition.market_id === 'string' && condition.market_id) {
@@ -754,7 +808,8 @@ export const buildWhaleMovementTemplate = (input: WhaleTemplateRequest): CreateS
       `Watches ${whaleAddresses.length} Morpho supplier wallets and triggers when ${requiredCount} of them reduce the canonical Morpho supply-share state by at least ${dropPercent}% over ${windowDuration}.`,
     definition,
     cooldownMinutes,
-    repeatPolicy
+    repeatPolicy,
+    input.schedule
   );
 };
 
@@ -827,7 +882,8 @@ export const buildErc20TransferTemplate = (input: Erc20TransferTemplateRequest):
       `Uses the Iruka raw-events ERC-20 transfer preset for ${tokenContract} and triggers when gross ${directionLabel} for ${watchedAddress} exceeds ${amountThreshold} base units over ${windowDuration}.`,
     definition,
     cooldownMinutes,
-    repeatPolicy
+    repeatPolicy,
+    input.schedule
   );
 };
 
@@ -912,7 +968,8 @@ export const buildErc4626WithdrawTemplate = (input: Erc4626WithdrawTemplateReque
       `Watches archive-RPC ERC-4626 share balances for ${ownerAddresses.length} owners in vault ${vaultContract} and triggers when ${requiredCount} of them reduce shares by at least ${dropPercent}% over ${windowDuration}.`,
     definition,
     cooldownMinutes,
-    repeatPolicy
+    repeatPolicy,
+    input.schedule
   );
 };
 

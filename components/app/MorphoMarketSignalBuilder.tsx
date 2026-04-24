@@ -4,13 +4,14 @@ import { useDeferredValue, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { RiArrowRightLine, RiSearchLine } from 'react-icons/ri';
 import { RepeatPolicyFields } from '@/components/app/RepeatPolicyFields';
+import { ScheduleFields } from '@/components/app/ScheduleFields';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { buildSignalRepeatPolicy } from '@/lib/signals/repeat-policy';
 import { buildSignalTemplate, describeSignalDefinition, type SignalTemplateRequest } from '@/lib/signals/templates';
 import type { MorphoMarketSupplier, MorphoMarketSummary } from '@/lib/morpho-discovery/types';
-import type { SignalRepeatPolicyMode } from '@/lib/types/signal';
+import type { SignalRepeatPolicyMode, SignalSchedule } from '@/lib/types/signal';
 
 const formatCompactAddress = (value: string) => `${value.slice(0, 6)}...${value.slice(-4)}`;
 
@@ -41,6 +42,11 @@ const getMorphoWhaleTemplateId = (requiredCount: number) => {
   return 'whale-exit-trio' as const;
 };
 
+const DEFAULT_SCHEDULE: SignalSchedule = {
+  kind: 'interval',
+  interval_seconds: 300,
+};
+
 export function MorphoMarketSignalBuilder() {
   const router = useRouter();
   const [isMarketPickerExpanded, setIsMarketPickerExpanded] = useState(true);
@@ -54,6 +60,7 @@ export function MorphoMarketSignalBuilder() {
   const [dropPercent, setDropPercent] = useState('20');
   const [windowDuration, setWindowDuration] = useState('7d');
   const [cooldownMinutes, setCooldownMinutes] = useState('60');
+  const [schedule, setSchedule] = useState<SignalSchedule>(DEFAULT_SCHEDULE);
   const [repeatMode, setRepeatMode] = useState<SignalRepeatPolicyMode>('cooldown');
   const [snoozeMinutes, setSnoozeMinutes] = useState('1440');
   const [name, setName] = useState('');
@@ -174,6 +181,7 @@ export function MorphoMarketSignalBuilder() {
     dropPercent: Number(dropPercent),
     windowDuration,
     cooldownMinutes: Number(cooldownMinutes),
+    schedule,
     repeatPolicy: buildSignalRepeatPolicy(repeatMode, Number(snoozeMinutes), Number(cooldownMinutes)),
     name,
     description,
@@ -400,6 +408,10 @@ export function MorphoMarketSignalBuilder() {
                 className="ui-input"
               />
             </label>
+
+            <div className="sm:col-span-2">
+              <ScheduleFields schedule={schedule} onScheduleChange={setSchedule} />
+            </div>
 
             <RepeatPolicyFields
               mode={repeatMode}

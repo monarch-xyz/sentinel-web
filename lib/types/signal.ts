@@ -154,9 +154,11 @@ export interface CronSchedule {
   expression: string;
 }
 
+export type SignalSchedule = IntervalSchedule | CronSchedule;
+
 export interface ScheduleTrigger {
   type: 'schedule';
-  schedule: IntervalSchedule | CronSchedule;
+  schedule: SignalSchedule;
 }
 
 export interface ExternalTrigger {

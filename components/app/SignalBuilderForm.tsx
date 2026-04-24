@@ -10,6 +10,7 @@ import {
   RiUserSearchLine,
 } from 'react-icons/ri';
 import { RepeatPolicyFields } from '@/components/app/RepeatPolicyFields';
+import { ScheduleFields } from '@/components/app/ScheduleFields';
 import { SignalPresetCard } from '@/components/app/SignalPresetCard';
 import { Button } from '@/components/ui/Button';
 import { HelpHint } from '@/components/ui/HelpHint';
@@ -25,7 +26,7 @@ import {
 } from '@/lib/signals/templates';
 import { buildSignalRepeatPolicy } from '@/lib/signals/repeat-policy';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import type { SignalRepeatPolicyMode } from '@/lib/types/signal';
+import type { SignalRepeatPolicyMode, SignalSchedule } from '@/lib/types/signal';
 
 interface BuilderFormState {
   name: string;
@@ -42,6 +43,7 @@ interface BuilderFormState {
   amountThreshold: string;
   windowDuration: string;
   cooldownMinutes: string;
+  schedule: SignalSchedule;
   repeatMode: SignalRepeatPolicyMode;
   snoozeMinutes: string;
 }
@@ -99,6 +101,7 @@ const buildDefaultState = (templateId: SignalTemplateId): BuilderFormState => {
     amountThreshold: preset.kind === 'erc20-transfer' ? String(preset.defaults.amountThreshold) : '1000000',
     windowDuration: preset.defaults.windowDuration,
     cooldownMinutes: String(preset.defaults.cooldownMinutes),
+    schedule: { kind: 'interval', interval_seconds: 300 },
     repeatMode: 'cooldown',
     snoozeMinutes: '1440',
   };
@@ -165,6 +168,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
           dropPercent: Number(formState.dropPercent),
           windowDuration: formState.windowDuration,
           cooldownMinutes: Number(formState.cooldownMinutes),
+          schedule: formState.schedule,
           repeatPolicy: buildSignalRepeatPolicy(
             formState.repeatMode,
             Number(formState.snoozeMinutes),
@@ -182,6 +186,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
             amountThreshold: Number(formState.amountThreshold),
             windowDuration: formState.windowDuration,
             cooldownMinutes: Number(formState.cooldownMinutes),
+            schedule: formState.schedule,
             repeatPolicy: buildSignalRepeatPolicy(
               formState.repeatMode,
               Number(formState.snoozeMinutes),
@@ -199,6 +204,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
             dropPercent: Number(formState.dropPercent),
             windowDuration: formState.windowDuration,
             cooldownMinutes: Number(formState.cooldownMinutes),
+            schedule: formState.schedule,
             repeatPolicy: buildSignalRepeatPolicy(
               formState.repeatMode,
               Number(formState.snoozeMinutes),
@@ -271,6 +277,10 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
     : isErc4626WithdrawPreset
       ? 'Iruka watches tracked vault owners and alerts on share withdrawals.'
       : 'Iruka watches ERC-20 transfer flow for one address.';
+  const scheduleSummary =
+    formState.schedule.kind === 'interval'
+      ? `Every ${formState.schedule.interval_seconds}s`
+      : `Cron · ${formState.schedule.expression || '—'} UTC`;
 
   const previewStats = isMorphoWhalePreset
     ? [
@@ -292,6 +302,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
           { label: 'Direction', value: isErc20TransferPreset && selectedPresetConfig.direction === 'inflow' ? 'Inflow' : 'Outflow' },
           { label: 'Threshold', value: formState.amountThreshold ? `${formState.amountThreshold} base` : '0' },
         ];
+  const previewStatsWithSchedule = [...previewStats, { label: 'Wake-up', value: scheduleSummary }];
 
   return (
     <div className="space-y-6">
@@ -482,6 +493,18 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
               />
             </label>
 
+            <div className="sm:col-span-2">
+              <ScheduleFields
+                schedule={formState.schedule}
+                onScheduleChange={(value) =>
+                  setFormState((current) => ({
+                    ...current,
+                    schedule: value,
+                  }))
+                }
+              />
+            </div>
+
             <RepeatPolicyFields
               mode={formState.repeatMode}
               cooldownMinutes={formState.cooldownMinutes}
@@ -561,7 +584,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
           </div>
 
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            {previewStats.map((stat) => (
+            {previewStatsWithSchedule.map((stat) => (
               <div key={stat.label} className="ui-stat">
                 <p className="ui-stat-label">{stat.label}</p>
                 <p className="ui-stat-value break-all">{stat.value}</p>

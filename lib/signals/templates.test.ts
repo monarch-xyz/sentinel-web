@@ -55,6 +55,44 @@ test('signal templates default to cooldown repeat policy', () => {
   ]);
 });
 
+test('signal templates can register a cron schedule', () => {
+  const payload = buildSignalTemplate({
+    templateId: 'single-whale-exit',
+    marketId: '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41',
+    whaleAddresses: ['0x1111111111111111111111111111111111111111'],
+    schedule: {
+      kind: 'cron',
+      expression: '0 8 * * *',
+    },
+  });
+
+  assert.deepEqual(payload.triggers, [
+    {
+      type: 'schedule',
+      schedule: {
+        kind: 'cron',
+        expression: '0 8 * * *',
+      },
+    },
+  ]);
+});
+
+test('signal templates reject malformed cron schedules', () => {
+  assert.throws(
+    () =>
+      buildSignalTemplate({
+        templateId: 'single-whale-exit',
+        marketId: '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41',
+        whaleAddresses: ['0x1111111111111111111111111111111111111111'],
+        schedule: {
+          kind: 'cron',
+          expression: '0 8 * * * *',
+        },
+      }),
+    SignalTemplateError
+  );
+});
+
 test('whale movement templates stay compatible with the current Iruka docs schema', () => {
   const payload = buildSignalTemplate({
     templateId: 'whale-exit-pair',
