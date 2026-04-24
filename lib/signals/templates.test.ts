@@ -105,6 +105,19 @@ test('whale movement templates stay compatible with the current Iruka docs schem
 
   assertDocCompatibleTemplatePayload(payload);
   assert.deepEqual(payload.delivery, [{ type: 'telegram' }]);
+  assert.deepEqual(payload.definition.scope.entities, [
+    '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41',
+  ]);
+
+  const groupCondition = payload.definition.conditions[0];
+  assert.equal(groupCondition?.type, 'group');
+  if (groupCondition?.type === 'group') {
+    const changeCondition = groupCondition.conditions[0];
+    assert.equal(changeCondition?.type, 'change');
+    if (changeCondition?.type === 'change') {
+      assert.equal(changeCondition.entity_id, '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41');
+    }
+  }
 });
 
 test('erc20 raw-event templates stay compatible with the current Iruka docs schema', () => {

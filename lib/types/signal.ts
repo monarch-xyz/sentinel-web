@@ -8,7 +8,7 @@ export interface SignalFilter {
 
 export interface SignalScope {
   chains: number[];
-  markets?: string[];
+  entities?: string[];
   addresses?: string[];
   protocol?: 'morpho' | 'all';
 }
@@ -47,7 +47,7 @@ export interface ThresholdCondition {
   window?: TimeWindow;
   filters?: SignalFilter[];
   chain_id?: number;
-  market_id?: string;
+  entity_id?: string;
   contract_address?: string;
   address?: string;
 }
@@ -60,7 +60,7 @@ export interface ChangeCondition {
   by: { percent: number } | { absolute: NumericInput };
   window?: TimeWindow;
   chain_id?: number;
-  market_id?: string;
+  entity_id?: string;
   contract_address?: string;
   address?: string;
 }
@@ -86,7 +86,7 @@ export interface AggregateCondition {
   window?: TimeWindow;
   filters?: SignalFilter[];
   chain_id?: number;
-  market_id?: string;
+  entity_id?: string;
   contract_address?: string;
 }
 

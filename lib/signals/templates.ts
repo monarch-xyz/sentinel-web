@@ -416,16 +416,16 @@ export const getPrimaryScheduleSummary = (triggers: SignalTrigger[]) => {
 };
 
 
-const getConditionMarketId = (condition: SignalCondition): string | null => {
-  if ('market_id' in condition && typeof condition.market_id === 'string' && condition.market_id) {
-    return condition.market_id;
+const getConditionEntityId = (condition: SignalCondition): string | null => {
+  if ('entity_id' in condition && typeof condition.entity_id === 'string' && condition.entity_id) {
+    return condition.entity_id;
   }
 
   if (condition.type === 'group') {
     for (const nestedCondition of condition.conditions) {
-      const nestedMarketId = getConditionMarketId(nestedCondition);
-      if (nestedMarketId) {
-        return nestedMarketId;
+      const nestedEntityId = getConditionEntityId(nestedCondition);
+      if (nestedEntityId) {
+        return nestedEntityId;
       }
     }
   }
@@ -605,12 +605,12 @@ const extractMarketIdentifier = (value: string) => {
 export const normalizeSignalMarketId = (value: string) => extractMarketIdentifier(value);
 
 export const getSignalMarketId = (definition: SignalDefinition) => {
-  const marketValue = definition.scope.markets?.[0] ?? definition.conditions.map(getConditionMarketId).find(Boolean);
-  if (!marketValue) {
+  const entityValue = definition.scope.entities?.[0] ?? definition.conditions.map(getConditionEntityId).find(Boolean);
+  if (!entityValue) {
     return '—';
   }
 
-  return normalizeSignalMarketId(marketValue);
+  return normalizeSignalMarketId(entityValue);
 };
 
 export const getSignalPrimaryChainId = (definition: SignalDefinition): number | null => {
@@ -762,7 +762,7 @@ export const buildWhaleMovementTemplate = (input: WhaleTemplateRequest): CreateS
   const definition: SignalDefinition = {
     scope: {
       chains: [chainId],
-      markets: [marketId],
+      entities: [marketId],
       protocol: 'morpho',
     },
     window: {
@@ -793,7 +793,7 @@ export const buildWhaleMovementTemplate = (input: WhaleTemplateRequest): CreateS
               duration: windowDuration,
             },
             chain_id: chainId,
-            market_id: marketId,
+            entity_id: marketId,
           },
         ],
       },

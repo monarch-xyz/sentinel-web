@@ -53,8 +53,8 @@ const formatScopeSummary = (scope?: SignalScope) => {
     parts.push(`Chains ${scope.chains.join(', ')}`);
   }
 
-  if (scope.markets?.length) {
-    parts.push(`${scope.markets.length} market${scope.markets.length === 1 ? '' : 's'}`);
+  if (scope.entities?.length) {
+    parts.push(`${scope.entities.length} entit${scope.entities.length === 1 ? 'y' : 'ies'}`);
   }
 
   if (scope.addresses?.length) {
