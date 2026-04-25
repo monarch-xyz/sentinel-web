@@ -6,6 +6,7 @@ import {
   describeSignalDefinition,
   getPrimaryScheduleSummary,
   getSignalFocusDetails,
+  getSignalPrimaryChainId,
   getSignalTrackingSummary,
 } from '@/lib/signals/templates';
 import type { SignalRecord } from '@/lib/types/signal';
@@ -40,8 +41,7 @@ export function SignalDslPanel({
   const summary = describeSignalDefinition(signal.definition);
   const conditionCount = signal.definition.conditions.length;
   const logic = signal.definition.logic ?? 'AND';
-  const protocol = signal.definition.scope.protocol ?? 'all';
-  const chainList = signal.definition.scope.chains.join(', ');
+  const primaryChainId = getSignalPrimaryChainId(signal.definition);
   const focus = getSignalFocusDetails(signal.definition);
   const trackingSummary = getSignalTrackingSummary(signal.definition);
   const repeatPolicySummary = describeSignalRepeatPolicy(signal.metadata?.repeat_policy);
@@ -63,9 +63,9 @@ export function SignalDslPanel({
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <div className="ui-stat">
-          <p className="ui-stat-label">Scope</p>
-          <p className="mt-2 text-sm text-foreground">{protocol.toUpperCase()}</p>
-          <p className="mt-1 text-xs text-secondary">Chains {chainList || '—'}</p>
+          <p className="ui-stat-label">Targeting</p>
+          <p className="mt-2 text-sm text-foreground">{primaryChainId !== null ? `Chain ${primaryChainId}` : 'Explicit per-condition targeting'}</p>
+          <p className="mt-1 text-xs text-secondary">Target fields live on each condition, not on `definition.scope`.</p>
         </div>
         <div className="ui-stat">
           <p className="ui-stat-label">Wake-up</p>

@@ -28,7 +28,6 @@ const assertDocCompatibleTemplatePayload = (payload: CreateSignalRequest) => {
   assert.ok(payload.name, 'template payloads require name');
   assert.ok(payload.triggers.length > 0, 'template payloads require triggers');
   assert.ok(payload.definition.window.duration, 'template payloads require definition.window.duration');
-  assert.ok(payload.definition.scope.chains.length > 0, 'template payloads require scope.chains');
   assert.ok(payload.definition.conditions.length > 0, 'template payloads require at least one condition');
   assert.deepEqual(payload.delivery, [{ type: 'telegram' }]);
   assert.ok(payload.metadata?.description, 'template payloads require metadata.description');
@@ -105,12 +104,9 @@ test('whale movement templates stay compatible with the current Iruka docs schem
 
   assertDocCompatibleTemplatePayload(payload);
   assert.deepEqual(payload.delivery, [{ type: 'telegram' }]);
-  assert.deepEqual(payload.definition.scope.entities, [
-    '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41',
-  ]);
-
   const groupCondition = payload.definition.conditions[0];
   assert.equal(groupCondition?.type, 'group');
+
   if (groupCondition?.type === 'group') {
     const changeCondition = groupCondition.conditions[0];
     assert.equal(changeCondition?.type, 'change');

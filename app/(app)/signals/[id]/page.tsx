@@ -9,12 +9,12 @@ import { requestIruka, IrukaRequestError } from '@/lib/iruka/user-server';
 import { getTelegramLinkStatus } from '@/lib/telegram/link-state';
 import { buildTemplateEntryPath } from '@/lib/telegram/setup-flow';
 import type {
+  ExecutionScope,
   SignalConditionExplanation,
   SignalHistoryResponse,
   SignalNotificationLogEntry,
   SignalRecord,
   SignalRunLogEntry,
-  SignalScope,
 } from '@/lib/types/signal';
 
 interface SignalDetailPageProps {
@@ -38,16 +38,12 @@ const getEvaluationConditionsMet = (evaluation: SignalRunLogEntry) =>
 const getNotificationConditionsMet = (notification: SignalNotificationLogEntry) =>
   notification.conditions_met ?? notification.payload.conditions_met ?? [];
 
-const formatScopeSummary = (scope?: SignalScope) => {
+const formatScopeSummary = (scope?: ExecutionScope) => {
   if (!scope) {
     return null;
   }
 
   const parts: string[] = [];
-
-  if (scope.protocol) {
-    parts.push(scope.protocol.toUpperCase());
-  }
 
   if (scope.chains.length > 0) {
     parts.push(`Chains ${scope.chains.join(', ')}`);

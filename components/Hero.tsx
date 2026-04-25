@@ -26,10 +26,19 @@ const previewCode = `{
     }
   ],
   "definition": {
-    "scope": { "chains": [1], "protocol": "all" },
     "window": { "duration": "7d" },
     "logic": "AND",
-    "conditions": [{ "...": "..." }]
+    "conditions": [
+      {
+        "type": "change",
+        "metric": "ERC4626.Position.shares",
+        "direction": "decrease",
+        "by": { "percent": 20 },
+        "chain_id": 1,
+        "contract_address": "0xvault",
+        "address": "0xholder"
+      }
+    ]
   },
   "delivery": [{ "type": "telegram" }],
   "metadata": {

@@ -16,7 +16,7 @@ Goal:
 
 Return:
 - the final signal JSON
-- a short explanation of scope, triggers, delivery, and metadata.repeat_policy`;
+- a short explanation of targeting, triggers, delivery, and metadata.repeat_policy`;
 
 export function AgentSignalGuide() {
   return (

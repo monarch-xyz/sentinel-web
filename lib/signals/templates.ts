@@ -108,7 +108,7 @@ export type SignalTemplateRequest =
   | Erc4626WithdrawTemplateRequest;
 
 export interface SignalFocusDetails {
-  label: 'Market' | 'Vault' | 'Asset' | 'Address' | 'Scope';
+  label: 'Market' | 'Vault' | 'Asset' | 'Address' | 'Chain';
   value: string;
   hint?: string;
   href?: string;
@@ -454,6 +454,23 @@ const getConditionContractAddress = (condition: SignalCondition): string | null 
   return null;
 };
 
+const getConditionChainId = (condition: SignalCondition): number | null => {
+  if ('chain_id' in condition && typeof condition.chain_id === 'number') {
+    return condition.chain_id;
+  }
+
+  if (condition.type === 'group') {
+    for (const nestedCondition of condition.conditions) {
+      const nestedChainId = getConditionChainId(nestedCondition);
+      if (typeof nestedChainId === 'number') {
+        return nestedChainId;
+      }
+    }
+  }
+
+  return null;
+};
+
 const getRawEventFilterStringValue = (condition: RawEventsCondition, field: string) => {
   const filter = condition.filters?.find(
     (item) => item.field === field && item.op === 'eq' && typeof item.value === 'string'
@@ -480,6 +497,25 @@ const getRawEventTrackedAddress = (condition: RawEventsCondition) =>
 const getRawEventTokenAddress = (condition: RawEventsCondition) => {
   const address = condition.event.contract_addresses?.[0];
   return typeof address === 'string' ? normalizeAddress(address) : null;
+};
+
+const getTrackedAddresses = (definition: SignalDefinition) => {
+  const addresses = new Set<string>();
+
+  for (const condition of definition.conditions) {
+    if (condition.type === 'group') {
+      for (const address of condition.addresses) {
+        addresses.add(normalizeAddress(address));
+      }
+      continue;
+    }
+
+    if ('address' in condition && typeof condition.address === 'string' && condition.address) {
+      addresses.add(normalizeAddress(condition.address));
+    }
+  }
+
+  return Array.from(addresses);
 };
 
 export const describeSignalDefinition = (definition: SignalDefinition) => {
@@ -557,7 +593,7 @@ export const countTrackedWallets = (definition: SignalDefinition) => {
     return erc4626Group.addresses.length;
   }
 
-  return definition.scope.addresses?.length ?? 0;
+  return getTrackedAddresses(definition).length;
 };
 
 export const getSignalTrackingSummary = (definition: SignalDefinition) => {
@@ -605,7 +641,7 @@ const extractMarketIdentifier = (value: string) => {
 export const normalizeSignalMarketId = (value: string) => extractMarketIdentifier(value);
 
 export const getSignalMarketId = (definition: SignalDefinition) => {
-  const entityValue = definition.scope.entities?.[0] ?? definition.conditions.map(getConditionEntityId).find(Boolean);
+  const entityValue = definition.conditions.map(getConditionEntityId).find(Boolean);
   if (!entityValue) {
     return '—';
   }
@@ -614,24 +650,10 @@ export const getSignalMarketId = (definition: SignalDefinition) => {
 };
 
 export const getSignalPrimaryChainId = (definition: SignalDefinition): number | null => {
-  const scopeChainId = definition.scope.chains.find((chainId) => Number.isFinite(chainId));
-  if (typeof scopeChainId === 'number') {
-    return scopeChainId;
-  }
-
   for (const condition of definition.conditions) {
-    if ('chain_id' in condition && typeof condition.chain_id === 'number') {
-      return condition.chain_id;
-    }
-
-    if (condition.type === 'group') {
-      const nestedChainId = condition.conditions.find(
-        (nestedCondition) => 'chain_id' in nestedCondition && typeof nestedCondition.chain_id === 'number'
-      );
-
-      if (nestedChainId && 'chain_id' in nestedChainId && typeof nestedChainId.chain_id === 'number') {
-        return nestedChainId.chain_id;
-      }
+    const chainId = getConditionChainId(condition);
+    if (typeof chainId === 'number') {
+      return chainId;
     }
   }
 
@@ -699,27 +721,32 @@ export const getSignalFocusDetails = (definition: SignalDefinition): SignalFocus
     }
   }
 
-  const primaryAddress = definition.scope.addresses?.[0];
+  const trackedAddresses = getTrackedAddresses(definition);
+  const primaryAddress = trackedAddresses[0];
   if (primaryAddress) {
     return {
       label: 'Address',
       value: primaryAddress,
-      hint:
-        definition.scope.addresses && definition.scope.addresses.length > 1
-          ? `${definition.scope.addresses.length} addresses in scope`
-          : undefined,
+      hint: trackedAddresses.length > 1 ? `${trackedAddresses.length} tracked addresses` : undefined,
+    };
+  }
+
+  if (primaryChainId !== null) {
+    return {
+      label: 'Chain',
+      value: String(primaryChainId),
     };
   }
 
   return {
-    label: 'Scope',
-    value: `Chains ${definition.scope.chains.join(', ') || '—'}`,
+    label: 'Chain',
+    value: '—',
   };
 };
 
-export const getSignalScopeSummary = (definition: SignalDefinition) => {
+export const getSignalTargetingSummary = (definition: SignalDefinition) => {
   const focus = getSignalFocusDetails(definition);
-  const compactValue = focus.label === 'Scope' ? focus.value : formatCompactIdentifier(focus.value);
+  const compactValue = focus.label === 'Chain' ? focus.value : formatCompactIdentifier(focus.value);
   return focus.hint ? `${focus.label}: ${compactValue} · ${focus.hint}` : `${focus.label}: ${compactValue}`;
 };
 
@@ -760,11 +787,6 @@ export const buildWhaleMovementTemplate = (input: WhaleTemplateRequest): CreateS
   assertRepeatPolicy(repeatPolicy);
 
   const definition: SignalDefinition = {
-    scope: {
-      chains: [chainId],
-      entities: [marketId],
-      protocol: 'morpho',
-    },
     window: {
       duration: windowDuration,
     },
@@ -838,11 +860,6 @@ export const buildErc20TransferTemplate = (input: Erc20TransferTemplateRequest):
   assertRepeatPolicy(repeatPolicy);
 
   const definition: SignalDefinition = {
-    scope: {
-      chains: [chainId],
-      addresses: [watchedAddress],
-      protocol: 'all',
-    },
     window: {
       duration: windowDuration,
     },
@@ -920,11 +937,6 @@ export const buildErc4626WithdrawTemplate = (input: Erc4626WithdrawTemplateReque
   assertRepeatPolicy(repeatPolicy);
 
   const definition: SignalDefinition = {
-    scope: {
-      chains: [chainId],
-      addresses: ownerAddresses,
-      protocol: 'all',
-    },
     window: {
       duration: windowDuration,
     },

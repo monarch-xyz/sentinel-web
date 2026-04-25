@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { SignalRowMenu } from '@/components/app/SignalRowMenu';
-import { describeSignalDefinition, getPrimaryScheduleSummary, getSignalScopeSummary } from '@/lib/signals/templates';
+import { describeSignalDefinition, getPrimaryScheduleSummary, getSignalTargetingSummary } from '@/lib/signals/templates';
 import { SignalRecord } from '@/lib/types/signal';
 
 interface SignalRowProps {
@@ -9,7 +9,7 @@ interface SignalRowProps {
 
 export function SignalRow({ signal }: SignalRowProps) {
   const summary = describeSignalDefinition(signal.definition);
-  const scopeSummary = getSignalScopeSummary(signal.definition);
+  const targetingSummary = getSignalTargetingSummary(signal.definition);
   const scheduleSummary = getPrimaryScheduleSummary(signal.triggers);
   const updatedAt = new Date(signal.updated_at).toLocaleString();
   const lastTriggeredAt = signal.last_triggered_at ? new Date(signal.last_triggered_at).toLocaleString() : '—';
@@ -24,7 +24,7 @@ export function SignalRow({ signal }: SignalRowProps) {
           {signal.name}
         </Link>
         <p className="mt-2 text-sm leading-relaxed text-secondary">{summary}</p>
-        <p className="mt-2 text-xs text-secondary">{scopeSummary}</p>
+        <p className="mt-2 text-xs text-secondary">{targetingSummary}</p>
         <p className="mt-1 text-xs text-secondary">{scheduleSummary}</p>
       </div>
       <div>

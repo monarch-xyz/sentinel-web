@@ -6,11 +6,10 @@ export interface SignalFilter {
   value: string | number | boolean | Array<string | number>;
 }
 
-export interface SignalScope {
+export interface ExecutionScope {
   chains: number[];
   entities?: string[];
   addresses?: string[];
-  protocol?: 'morpho' | 'all';
 }
 
 export interface TimeWindow {
@@ -117,7 +116,6 @@ export type SignalCondition =
   | RawEventsCondition;
 
 export interface SignalDefinition {
-  scope: SignalScope;
   conditions: SignalCondition[];
   logic?: 'AND' | 'OR';
   window: TimeWindow;
@@ -235,7 +233,7 @@ export interface SignalConditionExplanation {
 
 export interface SignalEvaluationMetadata {
   logic?: 'AND' | 'OR';
-  scope?: SignalScope;
+  scope?: ExecutionScope;
   repeat_policy?: SignalRepeatPolicy;
   condition_results?: SignalConditionExplanation[];
   conditions_met?: SignalConditionExplanation[];
@@ -256,7 +254,7 @@ export interface SignalRunLogEntry {
   evaluation_duration_ms?: number | null;
   delivery_duration_ms?: number | null;
   logic?: 'AND' | 'OR';
-  scope?: SignalScope;
+  scope?: ExecutionScope;
   condition_results?: SignalConditionExplanation[];
   conditions_met?: SignalConditionExplanation[];
   metadata?: SignalEvaluationMetadata | null;
@@ -264,7 +262,7 @@ export interface SignalRunLogEntry {
 }
 
 export interface SignalNotificationPayload {
-  scope?: SignalScope;
+  scope?: ExecutionScope;
   conditions_met?: SignalConditionExplanation[];
   context?: Record<string, unknown>;
   [key: string]: unknown;
