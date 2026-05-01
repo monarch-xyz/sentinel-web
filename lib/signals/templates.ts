@@ -546,17 +546,25 @@ const getConditionEntityId = (condition: SignalCondition): string | null => {
   return null;
 };
 
+const getStateRefFilterValue = (condition: SignalCondition, field: string): string | null => {
+  const stateRef =
+    'source' in condition && condition.source?.kind === 'state'
+      ? condition.source.state_ref
+      : 'state_ref' in condition
+        ? condition.state_ref
+        : undefined;
+  const filter = stateRef?.filters.find((item) => item.field === field && item.op === 'eq' && typeof item.value === 'string');
+  return typeof filter?.value === 'string' ? normalizeAddress(filter.value) : null;
+};
+
 const getConditionContractAddress = (condition: SignalCondition): string | null => {
   if ('token' in condition && typeof condition.token === 'string' && condition.token) {
     return normalizeAddress(condition.token);
   }
 
-  if (
-    'contract_address' in condition &&
-    typeof condition.contract_address === 'string' &&
-    condition.contract_address
-  ) {
-    return normalizeAddress(condition.contract_address);
+  const stateRefContract = getStateRefFilterValue(condition, 'contractAddress');
+  if (stateRefContract) {
+    return stateRefContract;
   }
 
   if (condition.type === 'group') {
@@ -1317,7 +1325,6 @@ export const buildLpPoolLiquidityTemplate = (input: LpPoolLiquidityTemplateReque
         by: { percent: dropPercent },
         window: { duration: windowDuration },
         chain_id: chainId,
-        contract_address: address,
       };
     }
 
@@ -1339,7 +1346,6 @@ export const buildLpPoolLiquidityTemplate = (input: LpPoolLiquidityTemplateReque
       by: { percent: dropPercent },
       window: { duration: windowDuration },
       chain_id: chainId,
-      contract_address: address,
     };
   });
 

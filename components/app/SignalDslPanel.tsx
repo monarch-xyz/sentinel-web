@@ -65,7 +65,7 @@ export function SignalDslPanel({
         <div className="ui-stat">
           <p className="ui-stat-label">Targeting</p>
           <p className="mt-2 text-sm text-foreground">{primaryChainId !== null ? `Chain ${primaryChainId}` : 'Explicit per-condition targeting'}</p>
-          <p className="mt-1 text-xs text-secondary">Target fields live on each condition, not on `definition.scope`.</p>
+          <p className="mt-1 text-xs text-secondary">Target fields live on each condition.</p>
         </div>
         <div className="ui-stat">
           <p className="ui-stat-label">Wake-up</p>
