@@ -60,7 +60,6 @@ export interface ThresholdCondition {
   filters?: SignalFilter[];
   chain_id?: number;
   entity_id?: string;
-  contract_address?: string;
   address?: string;
   token?: string;
   account?: string;
@@ -76,7 +75,6 @@ export interface ChangeCondition {
   window?: TimeWindow;
   chain_id?: number;
   entity_id?: string;
-  contract_address?: string;
   address?: string;
   token?: string;
   account?: string;
@@ -104,7 +102,6 @@ export interface AggregateCondition {
   filters?: SignalFilter[];
   chain_id?: number;
   entity_id?: string;
-  contract_address?: string;
 }
 
 export interface RawEventSpec {
