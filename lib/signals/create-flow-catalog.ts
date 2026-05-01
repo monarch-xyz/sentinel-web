@@ -7,7 +7,7 @@ import {
 export type CreateSignalPersonaId = 'human' | 'agent';
 export type HumanSignalCategoryId = 'vaults' | 'protocols' | 'tokens';
 export type AssistedVaultExampleId = 'morpho' | 'euler' | 'aave-v3';
-export type AssistedProtocolExampleId = 'morpho-markets';
+export type AssistedProtocolExampleId = 'morpho-markets' | 'uniswap-lp-pools';
 
 export interface CreateSignalPersonaOption {
   id: CreateSignalPersonaId;
@@ -124,6 +124,15 @@ export const ASSISTED_PROTOCOL_EXAMPLES: AssistedExampleOption<AssistedProtocolE
     summary: 'Protocol alert',
     helpText:
       'Use backend-indexed Morpho markets to select suppliers and let Iruka watch for coordinated exits.',
+    badge: 'Live now',
+    status: 'live',
+  },
+  {
+    id: 'uniswap-lp-pools',
+    title: 'Uniswap LP pools',
+    summary: 'Liquidity drop alert',
+    helpText:
+      'Search public Uniswap v3 pools, optionally add manual Uniswap v4 pools, and trigger when liquidity drops by percent.',
     badge: 'Live now',
     status: 'live',
   },

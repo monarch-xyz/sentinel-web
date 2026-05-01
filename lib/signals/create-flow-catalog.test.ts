@@ -34,9 +34,11 @@ test('vault examples keep Morpho and Euler live while Aave remains staged', () =
   assert.deepEqual(stagedVaults, ['aave-v3']);
 });
 
-test('protocol examples stay anchored on Morpho markets for now', () => {
-  assert.equal(ASSISTED_PROTOCOL_EXAMPLES.length, 1);
-  assert.equal(ASSISTED_PROTOCOL_EXAMPLES[0]?.id, 'morpho-markets');
+test('protocol examples expose Morpho markets and Uniswap LP pools', () => {
+  assert.deepEqual(
+    ASSISTED_PROTOCOL_EXAMPLES.map((option) => option.id),
+    ['morpho-markets', 'uniswap-lp-pools']
+  );
   assert.ok(ASSISTED_PROTOCOL_EXAMPLES.every((option) => option.summary.length > 0 && option.helpText.length > 0));
 });
 

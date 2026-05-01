@@ -65,6 +65,7 @@ const presetIcons: Record<SignalTemplateId, ReactNode> = {
   'erc20-event-aggregation-watch': <RiArrowDownLine className="w-5 h-5" />,
   'erc20-balance-watch': <RiExchangeDollarLine className="w-5 h-5" />,
   'erc4626-withdraw-percent-watch': <RiExchangeDollarLine className="w-5 h-5" />,
+  'lp-pool-liquidity-drop': <RiExchangeDollarLine className="w-5 h-5" />,
 };
 
 const COMMON_ERC20_TOKENS = [
@@ -208,6 +209,7 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
   const isErc20TransferPreset = selectedPresetConfig.kind === 'erc20-transfer';
   const isErc20BalancePreset = selectedPresetConfig.kind === 'erc20-balance';
   const isErc4626WithdrawPreset = selectedPresetConfig.kind === 'erc4626-withdraw';
+  const isLpPoolPreset = selectedPresetConfig.kind === 'lp-pool-liquidity';
 
   const updateField = (field: keyof BuilderFormState, value: string) => {
     setFormState((current) => ({
@@ -276,24 +278,41 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
               name: formState.name,
               description: formState.description,
             }
-          : {
-              templateId: selectedPresetConfig.id,
-              vaultContract: formState.vaultContract,
-              ownerAddresses: formState.ownerAddresses,
-              chainId: Number(formState.chainId),
-              requiredCount: Number(formState.requiredCount),
-              dropPercent: Number(formState.dropPercent),
-              windowDuration: formState.windowDuration,
-              cooldownMinutes: Number(formState.cooldownMinutes),
-              schedule: formState.schedule,
-              repeatPolicy: buildSignalRepeatPolicy(
-                formState.repeatMode,
-                Number(formState.snoozeMinutes),
-                Number(formState.cooldownMinutes)
-              ),
-              name: formState.name,
-              description: formState.description,
-            };
+          : selectedPresetConfig.kind === 'erc4626-withdraw'
+            ? {
+                templateId: selectedPresetConfig.id,
+                vaultContract: formState.vaultContract,
+                ownerAddresses: formState.ownerAddresses,
+                chainId: Number(formState.chainId),
+                requiredCount: Number(formState.requiredCount),
+                dropPercent: Number(formState.dropPercent),
+                windowDuration: formState.windowDuration,
+                cooldownMinutes: Number(formState.cooldownMinutes),
+                schedule: formState.schedule,
+                repeatPolicy: buildSignalRepeatPolicy(
+                  formState.repeatMode,
+                  Number(formState.snoozeMinutes),
+                  Number(formState.cooldownMinutes)
+                ),
+                name: formState.name,
+                description: formState.description,
+              }
+            : {
+                templateId: selectedPresetConfig.id,
+                pools: [],
+                chainId: Number(formState.chainId),
+                dropPercent: Number(formState.dropPercent),
+                windowDuration: formState.windowDuration,
+                cooldownMinutes: Number(formState.cooldownMinutes),
+                schedule: formState.schedule,
+                repeatPolicy: buildSignalRepeatPolicy(
+                  formState.repeatMode,
+                  Number(formState.snoozeMinutes),
+                  Number(formState.cooldownMinutes)
+                ),
+                name: formState.name,
+                description: formState.description,
+              };
 
   let previewError: string | null = null;
   let previewDefinition: string | null = null;
@@ -352,14 +371,18 @@ export function SignalBuilderForm({ initialPreset = 'whale-exit-trio', telegramL
     ? 'Morpho whale movement signal'
     : isErc4626WithdrawPreset
       ? 'ERC-4626 owner withdrawal % signal'
-      : isErc20BalancePreset
+      : isLpPoolPreset
+        ? 'LP pool liquidity signal'
+        : isErc20BalancePreset
         ? 'ERC-20 balance change signal'
         : 'ERC-20 event aggregation signal';
   const previewDescription = isMorphoWhalePreset
     ? 'Iruka watches the tracked Morpho suppliers and alerts on coordinated exits.'
     : isErc4626WithdrawPreset
       ? 'Iruka watches tracked vault owners and alerts on share withdrawals.'
-      : isErc20BalancePreset
+      : isLpPoolPreset
+        ? 'Iruka watches selected LP pools and alerts on liquidity drops.'
+        : isErc20BalancePreset
         ? 'Iruka watches one holder balance through archive RPC and alerts on flexible balance changes.'
         : 'Iruka aggregates ERC-20 transfer flow over the selected lookback window.';
   const scheduleSummary =

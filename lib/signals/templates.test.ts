@@ -249,3 +249,81 @@ test('signal templates reject invalid snooze repeat policy input', () => {
     SignalTemplateError
   );
 });
+
+test('lp pool template creates one state_ref condition per uniswap v3 pool', () => {
+  const payload = buildSignalTemplate({
+    templateId: 'lp-pool-liquidity-drop',
+    pools: [
+      { protocol: 'uniswap_v3', address: '0x1111111111111111111111111111111111111111', label: 'USDC/WETH 0.05%' },
+      { protocol: 'uniswap_v3', address: '0x2222222222222222222222222222222222222222', label: 'WBTC/WETH 0.3%' },
+    ],
+    dropPercent: 20,
+    windowDuration: '1h',
+    chainId: 1,
+  });
+
+  assert.equal(payload.definition.logic, 'AND');
+  assert.equal(payload.definition.conditions.length, 2);
+  for (const condition of payload.definition.conditions) {
+    assert.equal(condition.type, 'change');
+    if (condition.type !== 'change' || condition.source?.kind !== 'state') {
+      continue;
+    }
+    assert.equal(condition.source.state_ref.protocol, 'uniswap_v3');
+    assert.equal(condition.source.state_ref.entity_type, 'Pool');
+    assert.equal(condition.source.state_ref.field, 'liquidity');
+  }
+});
+
+test('lp pool template supports mixed uniswap v3 and v4 pools', () => {
+  const payload = buildSignalTemplate({
+    templateId: 'lp-pool-liquidity-drop',
+    pools: [
+      { protocol: 'uniswap_v3', address: '0x1111111111111111111111111111111111111111' },
+      {
+        protocol: 'uniswap_v4',
+        address: '0x3333333333333333333333333333333333333333',
+        poolId: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      },
+    ],
+    dropPercent: 15,
+    windowDuration: '2h',
+    chainId: 1,
+  });
+
+  const v4 = payload.definition.conditions[1];
+  assert.equal(v4?.type, 'change');
+  if (v4?.type === 'change' && v4.source?.kind === 'state') {
+    assert.equal(v4.source.state_ref.protocol, 'uniswap_v4');
+    assert.equal(v4.source.state_ref.entity_type, 'PoolManager');
+    assert.equal(v4.source.state_ref.field, 'liquidity');
+    const poolIdFilter = v4.source.state_ref.filters.find((filter) => filter.field === 'poolId');
+    assert.equal(poolIdFilter?.value, '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+  }
+});
+
+test('lp pool template rejects missing pools and invalid v4 poolId', () => {
+  assert.throws(
+    () =>
+      buildSignalTemplate({
+        templateId: 'lp-pool-liquidity-drop',
+        pools: [],
+      }),
+    SignalTemplateError
+  );
+
+  assert.throws(
+    () =>
+      buildSignalTemplate({
+        templateId: 'lp-pool-liquidity-drop',
+        pools: [
+          {
+            protocol: 'uniswap_v4',
+            address: '0x3333333333333333333333333333333333333333',
+            poolId: '0x1234',
+          },
+        ],
+      }),
+    SignalTemplateError
+  );
+});

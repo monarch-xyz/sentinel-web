@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { RiArrowRightLine } from 'react-icons/ri';
 import { CreateFlowHeader } from '@/components/app/CreateFlowHeader';
 import { MorphoMarketSignalBuilder } from '@/components/app/MorphoMarketSignalBuilder';
+import { LpPoolSignalBuilder } from '@/components/app/LpPoolSignalBuilder';
 import { SignalBuilderForm } from '@/components/app/SignalBuilderForm';
 import { VaultUseCaseBuilder } from '@/components/app/VaultUseCaseBuilder';
 import { Button } from '@/components/ui/Button';
@@ -19,6 +20,7 @@ import {
   getHumanSignalCategory,
   type HumanSignalCategoryId,
 } from '@/lib/signals/create-flow-catalog';
+import type { AssistedProtocolExampleId } from '@/lib/signals/create-flow-catalog';
 import type { SignalTemplateId } from '@/lib/signals/templates';
 import { CUSTOM_TEMPLATE_PATH } from '@/lib/telegram/setup-flow';
 import type { SupportedVaultProtocolId } from '@/lib/vault-discovery/types';
@@ -27,6 +29,7 @@ export function HumanSignalBuilder() {
   const [category, setCategory] = useState<HumanSignalCategoryId>('vaults');
   const [selectedVaultProtocol, setSelectedVaultProtocol] = useState<SupportedVaultProtocolId>('morpho');
   const [selectedTokenTemplate, setSelectedTokenTemplate] = useState<SignalTemplateId>('erc20-balance-watch');
+  const [selectedProtocolTemplate, setSelectedProtocolTemplate] = useState<AssistedProtocolExampleId>('morpho-markets');
   const selectedCategory = getHumanSignalCategory(category);
 
   return (
@@ -88,7 +91,13 @@ export function HumanSignalBuilder() {
             })
           : category === 'protocols'
             ? ASSISTED_PROTOCOL_EXAMPLES.map((example) => (
-                <div key={example.id} className="ui-panel p-5 text-left">
+                <button
+                  key={example.id}
+                  type="button"
+                  onClick={() => setSelectedProtocolTemplate(example.id)}
+                  data-active={selectedProtocolTemplate === example.id}
+                  className="ui-option p-5 text-left"
+                >
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="ui-stat-label">{example.badge}</p>
@@ -96,7 +105,7 @@ export function HumanSignalBuilder() {
                     </div>
                     <HelpHint text={example.helpText} align="right" />
                   </div>
-                </div>
+                </button>
               ))
             : [
                 <button
@@ -147,7 +156,7 @@ export function HumanSignalBuilder() {
       {category === 'vaults' ? (
         <VaultUseCaseBuilder protocol={selectedVaultProtocol} />
       ) : category === 'protocols' ? (
-        <MorphoMarketSignalBuilder />
+        selectedProtocolTemplate === 'uniswap-lp-pools' ? <LpPoolSignalBuilder /> : <MorphoMarketSignalBuilder />
       ) : (
         <SignalBuilderForm
           key={selectedTokenTemplate}

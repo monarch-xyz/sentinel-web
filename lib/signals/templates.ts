@@ -14,13 +14,19 @@ import type {
 } from '@/lib/types/signal';
 import { DEFAULT_SIGNAL_REPEAT_POLICY, normalizeSignalRepeatPolicy } from '@/lib/signals/repeat-policy';
 
-export type SignalTemplateKind = 'morpho-whale' | 'erc20-transfer' | 'erc20-balance' | 'erc4626-withdraw';
+export type SignalTemplateKind = 'morpho-whale' | 'erc20-transfer' | 'erc20-balance' | 'erc4626-withdraw' | 'lp-pool-liquidity';
 
 export type WhaleTemplateId = 'whale-exit-trio' | 'whale-exit-pair' | 'single-whale-exit';
 export type Erc20TransferTemplateId = 'erc20-event-aggregation-watch';
 export type Erc20BalanceTemplateId = 'erc20-balance-watch';
 export type Erc4626WithdrawTemplateId = 'erc4626-withdraw-percent-watch';
-export type SignalTemplateId = WhaleTemplateId | Erc20TransferTemplateId | Erc20BalanceTemplateId | Erc4626WithdrawTemplateId;
+export type LpPoolLiquidityTemplateId = 'lp-pool-liquidity-drop';
+export type SignalTemplateId =
+  | WhaleTemplateId
+  | Erc20TransferTemplateId
+  | Erc20BalanceTemplateId
+  | Erc4626WithdrawTemplateId
+  | LpPoolLiquidityTemplateId;
 
 interface BaseSignalTemplatePreset<TId extends SignalTemplateId, TKind extends SignalTemplateKind, TDefaults> {
   id: TId;
@@ -80,11 +86,23 @@ export type Erc4626WithdrawTemplatePreset = BaseSignalTemplatePreset<
   }
 >;
 
+export type LpPoolLiquidityTemplatePreset = BaseSignalTemplatePreset<
+  LpPoolLiquidityTemplateId,
+  'lp-pool-liquidity',
+  {
+    chainId: number;
+    dropPercent: number;
+    windowDuration: string;
+    cooldownMinutes: number;
+  }
+>;
+
 export type SignalTemplatePreset =
   | WhaleSignalTemplatePreset
   | Erc20TransferTemplatePreset
   | Erc20BalanceTemplatePreset
-  | Erc4626WithdrawTemplatePreset;
+  | Erc4626WithdrawTemplatePreset
+  | LpPoolLiquidityTemplatePreset;
 
 interface BaseTemplateRequest<TId extends SignalTemplateId> {
   templateId: TId;
@@ -127,14 +145,27 @@ export interface Erc4626WithdrawTemplateRequest extends BaseTemplateRequest<Erc4
   dropPercent?: number;
 }
 
+export interface LpPoolTemplatePoolInput {
+  protocol: 'uniswap_v3' | 'uniswap_v4';
+  address: string;
+  poolId?: string;
+  label?: string;
+}
+
+export interface LpPoolLiquidityTemplateRequest extends BaseTemplateRequest<LpPoolLiquidityTemplateId> {
+  pools: LpPoolTemplatePoolInput[];
+  dropPercent?: number;
+}
+
 export type SignalTemplateRequest =
   | WhaleTemplateRequest
   | Erc20TransferTemplateRequest
   | Erc20BalanceTemplateRequest
-  | Erc4626WithdrawTemplateRequest;
+  | Erc4626WithdrawTemplateRequest
+  | LpPoolLiquidityTemplateRequest;
 
 export interface SignalFocusDetails {
-  label: 'Market' | 'Vault' | 'Asset' | 'Address' | 'Chain';
+  label: 'Market' | 'Vault' | 'Asset' | 'Address' | 'Chain' | 'Pool';
   value: string;
   hint?: string;
   href?: string;
@@ -234,10 +265,24 @@ export const SIGNAL_TEMPLATE_PRESETS: SignalTemplatePreset[] = [
       cooldownMinutes: 60,
     },
   },
+  {
+    id: 'lp-pool-liquidity-drop',
+    kind: 'lp-pool-liquidity',
+    title: 'LP Pool Liquidity Drop',
+    description: 'Track one or more LP pools and trigger when pool liquidity drops by a percentage over a rolling window.',
+    accent: 'state_ref · uniswap_v3/v4 · percent drop',
+    defaults: {
+      chainId: 1,
+      dropPercent: 20,
+      windowDuration: '1h',
+      cooldownMinutes: 15,
+    },
+  },
 ];
 
 const ETH_ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/;
 const HEX_IDENTIFIER_PATTERN = /^0x[a-fA-F0-9]{8,}$/;
+const BYTES32_PATTERN = /^0x[a-fA-F0-9]{64}$/;
 
 const normalizeAddress = (value: string) => value.trim().toLowerCase();
 
@@ -409,6 +454,14 @@ const getErc20BalanceCondition = (definition: SignalDefinition) =>
       condition.type === 'change' &&
       ((condition.source?.kind === 'alias' && condition.source.name === 'ERC20.Position.balance') ||
         condition.metric === 'ERC20.Position.balance')
+  );
+
+const getLpPoolChangeConditions = (definition: SignalDefinition) =>
+  definition.conditions.filter(
+    (condition): condition is ChangeCondition =>
+      condition.type === 'change' &&
+      condition.source?.kind === 'state' &&
+      (condition.source.state_ref.protocol === 'uniswap_v3' || condition.source.state_ref.protocol === 'uniswap_v4')
   );
 
 const getRawEventsCondition = (definition: SignalDefinition) =>
@@ -605,6 +658,14 @@ export const describeSignalDefinition = (definition: SignalDefinition) => {
     return `${token} balance for ${holder} ${erc20Balance.direction}s by at least ${amount} within ${duration}.`;
   }
 
+  const lpChanges = getLpPoolChangeConditions(definition);
+  if (lpChanges.length > 0) {
+    const first = lpChanges[0];
+    const duration = first.window?.duration ?? definition.window.duration;
+    const amount = 'percent' in first.by ? `${first.by.percent}%` : `${first.by.absolute} absolute`;
+    return `${lpChanges.length} LP pool${lpChanges.length === 1 ? '' : 's'} ${first.direction} by at least ${amount} within ${duration}.`;
+  }
+
   const rawEvents = getRawEventsCondition(definition);
   if (rawEvents) {
     const duration = rawEvents.window?.duration ?? definition.window.duration;
@@ -777,6 +838,18 @@ export const getSignalFocusDetails = (definition: SignalDefinition): SignalFocus
             : primaryChainId !== null
               ? `Chain ${primaryChainId}`
               : undefined,
+    };
+  }
+
+  const lpChanges = getLpPoolChangeConditions(definition);
+  if (lpChanges.length > 0) {
+    const stateRef = lpChanges[0].source?.kind === 'state' ? lpChanges[0].source.state_ref : null;
+    const contractAddressFilter = stateRef?.filters.find((filter) => filter.field === 'contractAddress' && filter.op === 'eq');
+    const contractAddress = typeof contractAddressFilter?.value === 'string' ? normalizeAddress(contractAddressFilter.value) : null;
+    return {
+      label: 'Pool',
+      value: contractAddress ?? 'unknown',
+      hint: `${lpChanges.length} pool condition${lpChanges.length === 1 ? '' : 's'}${primaryChainId !== null ? ` · Chain ${primaryChainId}` : ''}`,
     };
   }
 
@@ -1184,6 +1257,102 @@ export const buildErc4626WithdrawTemplate = (input: Erc4626WithdrawTemplateReque
   );
 };
 
+export const buildLpPoolLiquidityTemplate = (input: LpPoolLiquidityTemplateRequest): CreateSignalRequest => {
+  const preset = getPreset(input.templateId);
+  if (preset.kind !== 'lp-pool-liquidity') {
+    throw new SignalTemplateError(`Template ${input.templateId} is not an LP pool liquidity template.`);
+  }
+
+  const chainId = input.chainId ?? preset.defaults.chainId;
+  const windowDuration = input.windowDuration?.trim() || preset.defaults.windowDuration;
+  const cooldownMinutes = input.cooldownMinutes ?? preset.defaults.cooldownMinutes;
+  const repeatPolicy = normalizeSignalRepeatPolicy(input.repeatPolicy);
+  const dropPercent = input.dropPercent ?? preset.defaults.dropPercent;
+  const pools = input.pools ?? [];
+
+  assertPositiveChainId(chainId);
+  assertNonNegativeCooldown(cooldownMinutes);
+  assertRepeatPolicy(repeatPolicy);
+
+  if (pools.length < 1) {
+    throw new SignalTemplateError('Add at least one LP pool.');
+  }
+
+  if (!Number.isFinite(dropPercent) || dropPercent <= 0) {
+    throw new SignalTemplateError('Drop percent must be greater than 0.');
+  }
+
+  const conditions: ChangeCondition[] = pools.map((pool, index) => {
+    const address = parseRequiredAddress(pool.address, `Pool ${index + 1} address`);
+    if (pool.protocol === 'uniswap_v4') {
+      const poolId = pool.poolId?.trim() ?? '';
+      if (!BYTES32_PATTERN.test(poolId)) {
+        throw new SignalTemplateError(`Invalid Uniswap v4 poolId for pool ${index + 1}. Expected bytes32.`);
+      }
+      return {
+        type: 'change',
+        source: {
+          kind: 'state',
+          state_ref: {
+            protocol: 'uniswap_v4',
+            entity_type: 'PoolManager',
+            field: 'liquidity',
+            filters: [
+              { field: 'chainId', op: 'eq', value: chainId },
+              { field: 'contractAddress', op: 'eq', value: address },
+              { field: 'poolId', op: 'eq', value: poolId },
+            ],
+          },
+        },
+        direction: 'decrease',
+        by: { percent: dropPercent },
+        window: { duration: windowDuration },
+        chain_id: chainId,
+        contract_address: address,
+      };
+    }
+
+    return {
+      type: 'change',
+      source: {
+        kind: 'state',
+        state_ref: {
+          protocol: 'uniswap_v3',
+          entity_type: 'Pool',
+          field: 'liquidity',
+          filters: [
+            { field: 'chainId', op: 'eq', value: chainId },
+            { field: 'contractAddress', op: 'eq', value: address },
+          ],
+        },
+      },
+      direction: 'decrease',
+      by: { percent: dropPercent },
+      window: { duration: windowDuration },
+      chain_id: chainId,
+      contract_address: address,
+    };
+  });
+
+  const definition: SignalDefinition = {
+    window: { duration: windowDuration },
+    logic: 'AND',
+    conditions,
+  };
+
+  const generatedName = `LP pool liquidity drop: ${pools.length} pool${pools.length === 1 ? '' : 's'} -${dropPercent}% in ${windowDuration}`;
+
+  return buildManagedTelegramSignal(
+    input.name?.trim() || generatedName,
+    input.description?.trim() ||
+      `Watches ${pools.length} LP pool${pools.length === 1 ? '' : 's'} and alerts when liquidity drops by at least ${dropPercent}% within ${windowDuration}.`,
+    definition,
+    cooldownMinutes,
+    repeatPolicy,
+    input.schedule
+  );
+};
+
 export const buildSignalTemplate = (input: SignalTemplateRequest): CreateSignalRequest => {
   switch (input.templateId) {
     case 'whale-exit-trio':
@@ -1196,6 +1365,8 @@ export const buildSignalTemplate = (input: SignalTemplateRequest): CreateSignalR
       return buildErc20BalanceTemplate(input);
     case 'erc4626-withdraw-percent-watch':
       return buildErc4626WithdrawTemplate(input);
+    case 'lp-pool-liquidity-drop':
+      return buildLpPoolLiquidityTemplate(input);
   }
 };
 
