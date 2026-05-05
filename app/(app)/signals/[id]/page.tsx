@@ -164,6 +164,11 @@ export default async function SignalDetailPage({ params }: SignalDetailPageProps
           </div>
 
           <div className="flex flex-wrap gap-3">
+            {typeof signal.complexity_score === 'number' ? (
+              <span className="ui-chip" data-tone="accent">
+                {signal.complexity_score} credit units
+              </span>
+            ) : null}
             <Link href="/signals" className="no-underline">
               <Button variant="secondary">Back to inventory</Button>
             </Link>

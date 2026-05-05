@@ -219,6 +219,23 @@ export interface SignalRecord {
   updated_at: string;
   last_evaluated_at?: string | null;
   last_fired_at?: string | null;
+  complexity_score?: number;
+}
+
+export interface SignalPlanLimits {
+  plan: {
+    key: 'free' | 'pro';
+    name: 'Free' | 'Pro';
+  };
+  active_complexity: {
+    used: number;
+    limit: number;
+  };
+  minimum_schedule_interval_seconds: number;
+  complexity_formula: {
+    version: 'provider_work_v1';
+    docs_url: string;
+  };
 }
 
 export type CreateSignalRequest = PublicSignalEnvelope;

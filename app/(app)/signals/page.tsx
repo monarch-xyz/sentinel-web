@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { RiAddLine } from 'react-icons/ri';
+import { SignalComplexityIndicator } from '@/components/app/SignalComplexityIndicator';
 import { SignalRow } from '@/components/app/SignalRow';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -7,7 +8,7 @@ import { getAuthenticatedUser } from '@/lib/auth/session';
 import { requestIruka, IrukaRequestError } from '@/lib/iruka/user-server';
 import { getTelegramLinkStatus } from '@/lib/telegram/link-state';
 import { buildTemplateEntryPath } from '@/lib/telegram/setup-flow';
-import type { SignalRecord } from '@/lib/types/signal';
+import type { SignalPlanLimits, SignalRecord } from '@/lib/types/signal';
 
 const byUpdatedAtDesc = (left: SignalRecord, right: SignalRecord) =>
   new Date(right.updated_at).getTime() - new Date(left.updated_at).getTime();
@@ -15,11 +16,15 @@ const byUpdatedAtDesc = (left: SignalRecord, right: SignalRecord) =>
 export default async function SignalsPage() {
   const user = await getAuthenticatedUser();
   let signals: SignalRecord[] = [];
+  let signalLimits: SignalPlanLimits | null = null;
   let signalsError: { message: string; status?: number } | null = null;
 
   if (user) {
     try {
-      signals = await requestIruka<SignalRecord[]>('/signals');
+      [signals, signalLimits] = await Promise.all([
+        requestIruka<SignalRecord[]>('/signals'),
+        requestIruka<SignalPlanLimits>('/me/limits'),
+      ]);
     } catch (error) {
       signalsError =
         error instanceof IrukaRequestError
@@ -74,6 +79,10 @@ export default async function SignalsPage() {
               {createSignalLabel}
             </Button>
           </Link>
+        </div>
+
+        <div className="relative z-10 mt-6">
+          <SignalComplexityIndicator limits={signalLimits} />
         </div>
       </section>
 

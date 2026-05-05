@@ -2,6 +2,7 @@ import { createApiClient } from '@/lib/api/client';
 import {
   CreateSignalRequest,
   SignalHistoryResponse,
+  SignalPlanLimits,
   SignalRecord,
   UpdateSignalRequest,
 } from '@/lib/types/signal';
@@ -9,6 +10,8 @@ import {
 const client = createApiClient({ baseUrl: '' });
 
 export const listSignals = () => client.get<SignalRecord[]>('/api/iruka/signals');
+
+export const getSignalLimits = () => client.get<SignalPlanLimits>('/api/iruka/me/limits');
 
 export const getSignal = (id: string) => client.get<SignalRecord>(`/api/iruka/signals/${id}`);
 
